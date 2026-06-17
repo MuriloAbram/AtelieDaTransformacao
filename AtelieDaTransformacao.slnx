@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="AtelieDaTransformacacao.Application/AtelieDaTransformacao.Application.csproj" />
+  <Project Path="AtelieDaTransformacao.API/AtelieDaTransformacao.API.csproj" />
+  <Project Path="AtelieDaTransformacao.Domain/AtelieDaTransformacao.Domain.csproj" />
+  <Project Path="AtelieDaTransformacao.Infrastructure/AtelieDaTransformacao.Infrastructure.csproj" />
+  <Project Path="AtelieDaTransformacao.UI/AtelieDaTransformacao.UI.csproj" />
+</Solution>
