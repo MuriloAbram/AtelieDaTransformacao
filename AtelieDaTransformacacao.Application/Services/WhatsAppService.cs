@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AtelieDaTransformacao.Application.Services
 {
-    internal class CustomerService
+    internal class WhatsAppService
     {
     }
 }
