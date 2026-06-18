@@ -1,4 +1,6 @@
-﻿using AtelieDaTransformacao.Application.DTOs;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using AtelieDaTransformacao.Application.DTOs;
 
 namespace AtelieDaTransformacao.Application.Interfaces
 {
