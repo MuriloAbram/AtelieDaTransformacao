@@ -12,5 +12,7 @@ namespace AtelieDaTransformacao.Domain.Entities
 
         public string Description { get; set; } = string.Empty;
 
+
+
     }
 }
