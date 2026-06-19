@@ -18,8 +18,11 @@ namespace AtelieDaTransformacao.Domain.Entities
         public int CategoryId { get; set; }
         public bool IsFeatured { get; set; }
 
+        /// <summary>
+        /// Data de criação do registro no BD
+        /// </summary>
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        
+        public virtual ProductCategory? Category { get; set; }
     }
 }

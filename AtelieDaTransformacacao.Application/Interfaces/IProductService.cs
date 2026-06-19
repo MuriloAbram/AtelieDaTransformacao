@@ -9,9 +9,9 @@ namespace AtelieDaTransformacao.Application.Interfaces
     /// </summary>
     public interface IProductService
     {
-        Task<IEnumerable<ProductDto>> GetAllAsync();
-        Task<IEnumerable<ProductDto>> GetByCategoryIdAsync(int categoryId);
-        Task<IEnumerable<ProductDto>> GetByUserIdAsync(string userId);
+        Task<IEnumerable<ProductDto>> GetAllAsync(); // Retorna todos os produtos disponíveis.
+        Task<IEnumerable<ProductDto>> GetByCategoryIdAsync(int categoryId); // Retorna os produtos filtrados por categoria, recebendo o ID da categoria como parâmetro.
+        Task<IEnumerable<ProductDto>> GetByUserIdAsync(string userId); // Retorna os produtos filtrados por usuário/vendedor, recebendo o ID do usuário como parâmetro.
         Task<ProductDto?> GetByIdAsync(int id);
         Task<ProductDto> CreateAsync(ProductDto productDto);
         Task UpdateAsync(ProductDto productDto);
