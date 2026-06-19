@@ -9,6 +9,6 @@ namespace AtelieDaTransformacao.Application.Interfaces
     /// </summary>
     public interface IWhatsAppService
     {
-        string GenerateRedirectUrl(string phoneNumber, string productName, decimal price);
+        string GenerateRedirectUrl(string phoneNumber, string productName, decimal price); 
     }
 }
