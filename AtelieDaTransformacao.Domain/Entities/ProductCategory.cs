@@ -16,6 +16,6 @@ namespace AtelieDaTransformacao.Domain.Entities
         /// <summary>
         /// Lista os produtos que pertencem a categoria
         /// </summary>
-        public virtual ICollection<Product> Product { get; set} = new List<Product>();
+        public virtual ICollection<Product> Product { get; set; } = new List<Product>();
     }
 }

@@ -1,25 +1,60 @@
-using AtelieDaTransformacao.UI.Models;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+using AtelieDaTransformacao.Application.Interfaces;
+using AtelieDaTransformacao.Application.ViewModels;
 
-namespace AtelieDaTransformacao.UI.Controllers
+namespace AtelieDaTransformacao.UI.Controllers;
+
+/// <summary>
+/// Controller principal da loja, responsável por exibir a vitrine de produtos para os clientes.
+/// </summary>
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly IProductService _productService;
+    private readonly IProductCategoryService _categoryService;
+
+    public HomeController(IProductService productService, IProductCategoryService categoryService)
     {
-        public IActionResult Index()
+        _productService = productService;
+        _categoryService = categoryService;
+    }
+
+    /// <summary>
+    /// Exibe a página inicial com todos os produtos e categorias disponíveis, permitindo filtros.
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> Index(int? categoryId)
+    {
+        var viewModel = new HomeViewModel
         {
-            return View();
+            Categories = await _categoryService.GetAllAsync(),
+            SelectedCategoryId = categoryId
+        };
+
+        if (categoryId.HasValue)
+        {
+            viewModel.Products = await _productService.GetByCategoryAsync(categoryId.Value);
+        }
+        else
+        {
+            viewModel.Products = await _productService.GetAllAsync();
         }
 
-        public IActionResult Privacy()
+        return View(viewModel);
+    }
+
+    /// <summary>
+    /// Exibe os detalhes de um produto específico com o link direcionado para o WhatsApp.
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> ProductDetails(int id)
+    {
+        var product = await _productService.GetByIdAsync(id);
+        if (product == null)
         {
-            return View();
+            return NotFound();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        return View(product);
     }
 }
