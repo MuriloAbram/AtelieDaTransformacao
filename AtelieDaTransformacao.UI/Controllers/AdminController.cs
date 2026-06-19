@@ -1,6 +1,6 @@
 ﻿namespace AtelieDaTransformacao.UI.Controllers
 {
-    public class Account
+    public class AdminController
     {
     }
 }

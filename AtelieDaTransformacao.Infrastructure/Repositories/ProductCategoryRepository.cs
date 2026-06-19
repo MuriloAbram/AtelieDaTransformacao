@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AtelieDaTransformacao.Infrastructure.Repositories
 {
-    internal class PaymentRepository
+    internal class ProductCategoryRepository
     {
     }
 }

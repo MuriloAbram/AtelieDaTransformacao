@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AtelieDaTransformacao.Domain.Interfaces
+namespace AtelieDaTransformacao.Domain.Entities
 {
-    internal class IOrderRepository
+    internal class Product
     {
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace AtelieDaTransformacao.API.Controllers
 {
-    public class EmployeesController
+    public class RedirectController
     {
     }
 }
