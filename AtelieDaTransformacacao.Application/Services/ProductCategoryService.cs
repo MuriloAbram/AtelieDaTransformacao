@@ -1,82 +1,78 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AtelieDaTransformacao.Application.DTOs;
 using AtelieDaTransformacao.Application.Interfaces;
 using AtelieDaTransformacao.Domain.Entities;
 using AtelieDaTransformacao.Domain.Interfaces;
 
-namespace AtelieDaTransformacao.Application.Services
+namespace AtelieDaTransformacao.Application.Services;
+
+/// <summary>
+/// Serviço de gerenciamento de categorias realizando conversões (mapeamento) manuais entre DTO e Entidade.
+/// </summary>
+public class ProductCategoryService : IProductCategoryService
 {
-    /// <summary>
-    /// Implementação do serviço de regras de negócio para categorias com mapeamento manual.
-    /// </summary>
-    public class ProductCategoryService : IProductCategoryService
+    private readonly IProductCategoryRepository _categoryRepository;
+
+    public ProductCategoryService(IProductCategoryRepository categoryRepository)
     {
-        private readonly IProductCategoryRepository _repository;
+        _categoryRepository = categoryRepository;
+    }
 
-        public ProductCategoryService(IProductCategoryRepository repository)
-        {
-            _repository = repository;
-        }
+    public async Task<IEnumerable<ProductCategoryDto>> GetAllAsync()
+    {
+        var categories = await _categoryRepository.GetAllAsync();
+        var dtos = new List<ProductCategoryDto>();
 
-        public async Task<IEnumerable<ProductCategoryDto>> GetAllAsync()
+        foreach (var item in categories)
         {
-            var categories = await _repository.GetAllAsync();
-            return categories.Select(c => new ProductCategoryDto
+            dtos.Add(new ProductCategoryDto
             {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description
-            }).ToList();
+                Id = item.Id,
+                Name = item.Name,
+                Description = item.Description
+            });
         }
+        return dtos;
+    }
 
-        public async Task<ProductCategoryDto?> GetByIdAsync(int id)
+    public async Task<ProductCategoryDto?> GetByIdAsync(int id)
+    {
+        var category = await _categoryRepository.GetByIdAsync(id);
+        if (category == null) return null;
+
+        return new ProductCategoryDto
         {
-            var category = await _repository.GetByIdAsync(id);
-            if (category == null) return null;
+            Id = category.Id,
+            Name = category.Name,
+            Description = category.Description
+        };
+    }
 
-            return new ProductCategoryDto
-            {
-                Id = category.Id,
-                Name = category.Name,
-                Description = category.Description
-            };
-        }
-
-        public async Task<ProductCategoryDto> CreateAsync(ProductCategoryDto categoryDto)
+    public async Task AddAsync(ProductCategoryDto categoryDto)
+    {
+        var category = new ProductCategory = new ProductCategory
         {
-            var category = new ProductCategory
-            {
-                Name = categoryDto.Name,
-                Description = categoryDto.Description
-            };
+            Name = categoryDto.Name,
+            Description = categoryDto.Description
+        };
+        await _categoryRepository.AddAsync(category);
+    }
 
-            var created = await _repository.CreateAsync(category);
+    public async Task UpdateAsync(ProductCategoryDto categoryDto)
+    {
+        var category = await _categoryRepository.GetByIdAsync(categoryDto.Id);
+        if (category == null) throw new Exception("Category not found");
 
-            return new ProductCategoryDto
-            {
-                Id = created.Id,
-                Name = created.Name,
-                Description = created.Description
-            };
-        }
+        category.Name = categoryDto.Name;
+        category.Description = categoryDto.Description;
 
-        public async Task UpdateAsync(ProductCategoryDto categoryDto)
-        {
-            var category = new ProductCategory
-            {
-                Id = categoryDto.Id,
-                Name = categoryDto.Name,
-                Description = categoryDto.Description
-            };
+        await _categoryRepository.UpdateAsync(category);
+    }
 
-            await _repository.UpdateAsync(category);
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            await _repository.DeleteAsync(id);
-        }
+    public async Task DeleteAsync(int id)
+    {
+        await _categoryRepository.DeleteAsync(id);
     }
 }
