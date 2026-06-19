@@ -1,155 +1,123 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AtelieDaTransformacao.Application.DTOs;
 using AtelieDaTransformacao.Application.Interfaces;
 using AtelieDaTransformacao.Domain.Entities;
 using AtelieDaTransformacao.Domain.Interfaces;
 
-namespace AtelieDaTransformacao.Application.Services
+namespace AtelieDaTransformacao.Application.Services;
+
+/// <summary>
+/// Serviço de produtos integrado com o gerador de links do WhatsApp e utilizando mapeamento manual de objetos.
+/// </summary>
+public class ProductService : IProductService
 {
-    /// <summary>
-    /// Implementação do serviço de regras de negócio para produtos com mapeamento manual e injeção do link de redirecionamento.
-    /// </summary>
-    public class ProductService : IProductService
+    private readonly IProductRepository _productRepository;
+    private readonly IWhatsAppService _whatsAppService;
+
+    public ProductService(IProductRepository productRepository, IWhatsAppService whatsAppService)
     {
-        private readonly IProductRepository _productRepository;
-        private readonly IWhatsAppService _whatsAppService;
+        _productRepository = productRepository;
+        _whatsAppService = whatsAppService;
+    }
 
-        public ProductService(IProductRepository productRepository, IWhatsAppService whatsAppService)
+    public async Task<IEnumerable<ProductDto>> GetAllAsync()
+    {
+        var products = await _productRepository.GetAllAsync();
+        var dtos = new List<ProductDto>();
+
+        foreach (var item in products)
         {
-            _productRepository = productRepository;
-            _whatsAppService = whatsAppService;
-        }
-
-        public async Task<IEnumerable<ProductDto>> GetAllAsync()
-        {
-            var products = await _productRepository.GetAllAsync();
-
-            return products.Select(p => new ProductDto
+            dtos.Add(new ProductDto
             {
-                Id = p.Id,
-                Title = p.Title,
-                Description = p.Description,
-                Price = p.Price,
-                ImageUrl = p.ImageUrl,
-                CategoryId = p.CategoryId,
-                CategoryName = p.Category?.Name ?? string.Empty,
-                UserId = p.UserId,
-                SellerName = p.User?.FullName ?? string.Empty,
-                WhatsAppUrl = p.User != null
-                    ? _whatsAppService.GenerateRedirectUrl(p.User.WhatsAppNumber, p.Title, p.Price)
-                    : string.Empty
-            }).ToList();
+                Id = item.Id,
+                Name = item.Name,
+                Description = item.Description,
+                Price = item.Price,
+                ImageUrl = item.ImageUrl,
+                IsAvailable = item.IsAvailable,
+                ProductCategoryId = item.ProductCategoryId,
+                CategoryName = item.ProductCategory?.Name ?? string.Empty,
+                WhatsAppLink = _whatsAppService.GenerateProductInquiryLink(item.Name, item.Price)
+            });
         }
+        return dtos;
+    }
 
-        public async Task<ProductDto?> GetByIdAsync(int id)
+    public async Task<ProductDto?> GetByIdAsync(int id)
+    {
+        var item = await _productRepository.GetByIdAsync(id);
+        if (item == null) return null;
+
+        return new ProductDto
         {
-            var product = await _productRepository.GetByIdAsync(id);
-            if (product == null) return null;
+            Id = item.Id,
+            Name = item.Name,
+            Description = item.Description,
+            Price = item.Price,
+            ImageUrl = item.ImageUrl,
+            IsAvailable = item.IsAvailable,
+            ProductCategoryId = item.ProductCategoryId,
+            CategoryName = item.ProductCategory?.Name ?? string.Empty,
+            WhatsAppLink = _whatsAppService.GenerateProductInquiryLink(item.Name, item.Price)
+        };
+    }
 
-            return new ProductDto
-            {
-                Id = product.Id,
-                Title = product.Title,
-                Description = product.Description,
-                Price = product.Price,
-                ImageUrl = product.ImageUrl,
-                CategoryId = product.CategoryId,
-                CategoryName = product.Category?.Name ?? string.Empty,
-                UserId = product.UserId,
-                SellerName = product.User?.FullName ?? string.Empty,
-                WhatsAppUrl = product.User != null
-                    ? _whatsAppService.GenerateRedirectUrl(product.User.WhatsAppNumber, product.Title, product.Price)
-                    : string.Empty
-            };
-        }
+    public async Task<IEnumerable<ProductDto>> GetByCategoryAsync(int categoryId)
+    {
+        var products = await _productRepository.GetByCategoryAsync(categoryId);
+        var dtos = new List<ProductDto>();
 
-        public async Task<IEnumerable<ProductDto>> GetByCategoryIdAsync(int categoryId)
+        foreach (var item in products)
         {
-            var products = await _productRepository.GetByCategoryIdAsync(categoryId);
-            return products.Select(p => new ProductDto
+            dtos.Add(new ProductDto
             {
-                Id = p.Id,
-                Title = p.Title,
-                Description = p.Description,
-                Price = p.Price,
-                ImageUrl = p.ImageUrl,
-                CategoryId = p.CategoryId,
-                CategoryName = p.Category?.Name ?? string.Empty,
-                UserId = p.UserId,
-                SellerName = p.User?.FullName ?? string.Empty,
-                WhatsAppUrl = p.User != null
-                    ? _whatsAppService.GenerateRedirectUrl(p.User.WhatsAppNumber, p.Title, p.Price)
-                    : string.Empty
-            }).ToList();
+                Id = item.Id,
+                Name = item.Name,
+                Description = item.Description,
+                Price = item.Price,
+                ImageUrl = item.ImageUrl,
+                IsAvailable = item.IsAvailable,
+                ProductCategoryId = item.ProductCategoryId,
+                CategoryName = item.ProductCategory?.Name ?? string.Empty,
+                WhatsAppLink = _whatsAppService.GenerateProductInquiryLink(item.Name, item.Price)
+            });
         }
+        return dtos;
+    }
 
-        public async Task<IEnumerable<ProductDto>> GetByUserIdAsync(string userId)
+    public async Task AddAsync(ProductDto productDto)
+    {
+        var product = new Product
         {
-            var products = await _productRepository.GetByUserIdAsync(userId);
-            return products.Select(p => new ProductDto
-            {
-                Id = p.Id,
-                Title = p.Title,
-                Description = p.Description,
-                Price = p.Price,
-                ImageUrl = p.ImageUrl,
-                CategoryId = p.CategoryId,
-                CategoryName = p.Category?.Name ?? string.Empty,
-                UserId = p.UserId,
-                SellerName = p.User?.FullName ?? string.Empty,
-                WhatsAppUrl = p.User != null
-                    ? _whatsAppService.GenerateRedirectUrl(p.User.WhatsAppNumber, p.Title, p.Price)
-                    : string.Empty
-            }).ToList();
-        }
+            Name = productDto.Name,
+            Description = productDto.Description,
+            Price = productDto.Price,
+            ImageUrl = productDto.ImageUrl,
+            IsAvailable = productDto.IsAvailable,
+            ProductCategoryId = productDto.ProductCategoryId
+        };
+        await _productRepository.AddAsync(product);
+    }
 
-        public async Task<ProductDto> CreateAsync(ProductDto productDto)
-        {
-            var product = new Product
-            {
-                Title = productDto.Title,
-                Description = productDto.Description,
-                Price = productDto.Price,
-                ImageUrl = productDto.ImageUrl,
-                CategoryId = productDto.CategoryId,
-                UserId = productDto.UserId
-            };
+    public async Task UpdateAsync(ProductDto productDto)
+    {
+        var product = await _productRepository.GetByIdAsync(productDto.Id);
+        if (product == null) throw new Exception("Product not found");
 
-            var created = await _productRepository.CreateAsync(product);
+        product.Name = productDto.Name;
+        product.Description = productDto.Description;
+        product.Price = productDto.Price;
+        product.ImageUrl = productDto.ImageUrl;
+        product.IsAvailable = productDto.IsAvailable;
+        product.ProductCategoryId = productDto.ProductCategoryId;
 
-            return new ProductDto
-            {
-                Id = created.Id,
-                Title = created.Title,
-                Description = created.Description,
-                Price = created.Price,
-                ImageUrl = created.ImageUrl,
-                CategoryId = created.CategoryId,
-                UserId = created.UserId
-            };
-        }
+        await _productRepository.UpdateAsync(product);
+    }
 
-        public async Task UpdateAsync(ProductDto productDto)
-        {
-            var product = new Product
-            {
-                Id = productDto.Id,
-                Title = productDto.Title,
-                Description = productDto.Description,
-                Price = productDto.Price,
-                ImageUrl = productDto.ImageUrl,
-                CategoryId = productDto.CategoryId,
-                UserId = productDto.UserId
-            };
-
-            await _productRepository.UpdateAsync(product);
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            await _productRepository.DeleteAsync(id);
-        }
+    public async Task DeleteAsync(int id)
+    {
+        await _productRepository.DeleteAsync(id);
     }
 }
