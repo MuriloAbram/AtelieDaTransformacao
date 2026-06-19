@@ -9,10 +9,21 @@ namespace AtelieDaTransformacao.Application.Interfaces;
 /// </summary>
 public interface IProductService
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     Task<IEnumerable<ProductDto>> GetAllAsync();
     Task<ProductDto?> GetByIdAsync(int id);
+    Task<IEnumerable<ProductDto>> GetFeaturedAsync();
     Task<IEnumerable<ProductDto>> GetByCategoryAsync(int categoryId);
+    /// <summary>
+    /// CRUD - adiciona, deleta, atualiza e conta Produtos existentes
+    /// </summary>
+    /// <param name="productDto"></param>
+    /// <returns></returns>
     Task AddAsync(ProductDto productDto);
     Task UpdateAsync(ProductDto productDto);
     Task DeleteAsync(int id);
+    Task<int> CountAsync();
 }
