@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AtelieDaTransformacao.Domain.Entities
+namespace AtelieDaTransformacao.Application.DTOs
 {
-    internal class User
+    internal class AuthDto
     {
     }
 }

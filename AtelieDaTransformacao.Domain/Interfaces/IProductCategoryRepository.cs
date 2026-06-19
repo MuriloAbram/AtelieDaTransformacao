@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AtelieDaTransformacao.Domain.Interfaces
 {
-    internal class IProductCategoryRepository
+    public interface IProductCategoryRepository
     {
     }
 }
