@@ -25,4 +25,15 @@ namespace AtelieDaTransformacao.Domain.Entities
 
         public virtual ProductCategory? Category { get; set; }
     }
+    /// <summary>
+    /// Entidade de clientes (representa a tabela Customers).
+    /// </summary>
+    public class Customer
+    {
+        public int Id { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    }
 }

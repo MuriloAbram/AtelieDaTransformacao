@@ -12,3 +12,23 @@ public class HomeViewModel
     public IEnumerable<ProductCategoryDto> Categories { get; set; } = new List<ProductCategoryDto>();
     public int? SelectedCategoryId { get; set; }
 }
+
+public class DashboardViewModel
+{
+    public int TotalGames { get; set; }
+    public int TotalCategories { get; set; }
+    public int FeaturedGames { get; set; }
+    public IEnumerable<ProductDto> RecentGames { get; set; } = new List<ProductDto>();
+}
+public class ProductFormViewModel
+{
+    public int Id { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public int ReleaseYear { get; set; }
+    public string CoverImageUrl { get; set; } = string.Empty;
+    public int CategoryId { get; set; }
+    public bool IsFeatured { get; set; }
+
+    public IEnumerable<ProductCategoryDto> Categories { get; set; } = new List<ProductCategoryDto>();
+}

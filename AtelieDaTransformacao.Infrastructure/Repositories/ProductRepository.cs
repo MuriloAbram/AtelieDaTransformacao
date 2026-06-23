@@ -2,6 +2,7 @@
 using AtelieDaTransformacao.Domain.Interfaces;
 using AtelieDaTransformacao.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace AtelieDaTransformacao.Infrastructure.Repositories
 {

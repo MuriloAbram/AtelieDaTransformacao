@@ -9,7 +9,7 @@ using AtelieDaTransformacao.Domain.Interfaces;
 namespace AtelieDaTransformacao.Application.Services;
 
 /// <summary>
-/// Serviço de gerenciamento de categorias realizando conversões (mapeamento) manuais entre DTO e Entidade.
+/// Service for managing product categories, performing manual mapping between DTOs and Entities.
 /// </summary>
 public class ProductCategoryService : IProductCategoryService
 {
@@ -20,6 +20,9 @@ public class ProductCategoryService : IProductCategoryService
         _categoryRepository = categoryRepository;
     }
 
+    /// <summary>
+    /// Retorna todas as categorias cadastradas mapeadas manualmente para DTOs.
+    /// </summary>
     public async Task<IEnumerable<ProductCategoryDto>> GetAllAsync()
     {
         var categories = await _categoryRepository.GetAllAsync();
@@ -37,6 +40,9 @@ public class ProductCategoryService : IProductCategoryService
         return dtos;
     }
 
+    /// <summary>
+    /// Busca uma categoria pelo ID e realiza o mapeamento manual para DTO.
+    /// </summary>
     public async Task<ProductCategoryDto?> GetByIdAsync(int id)
     {
         var category = await _categoryRepository.GetByIdAsync(id);
@@ -50,16 +56,23 @@ public class ProductCategoryService : IProductCategoryService
         };
     }
 
+    /// <summary>
+    /// Converte o DTO recebido para a entidade ProductCategory e salva no banco de dados.
+    /// </summary>
     public async Task AddAsync(ProductCategoryDto categoryDto)
     {
-        var category = new ProductCategory = new ProductCategory
+        var category = new ProductCategory
         {
             Name = categoryDto.Name,
             Description = categoryDto.Description
         };
+
         await _categoryRepository.AddAsync(category);
     }
 
+    /// <summary>
+    /// Atualiza as propriedades da categoria existente com base nos dados do DTO.
+    /// </summary>
     public async Task UpdateAsync(ProductCategoryDto categoryDto)
     {
         var category = await _categoryRepository.GetByIdAsync(categoryDto.Id);
@@ -71,6 +84,9 @@ public class ProductCategoryService : IProductCategoryService
         await _categoryRepository.UpdateAsync(category);
     }
 
+    /// <summary>
+    /// Remove uma categoria do banco de dados através do ID.
+    /// </summary>
     public async Task DeleteAsync(int id)
     {
         await _categoryRepository.DeleteAsync(id);

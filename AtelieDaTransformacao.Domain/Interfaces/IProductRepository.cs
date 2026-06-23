@@ -12,7 +12,7 @@ namespace AtelieDaTransformacao.Domain.Interfaces
         /// </summary>
         /// <returns></returns>
         Task<IEnumerable<Product>> GetAllAsync();
-        Task<IEnumerable<Product>> GetByIdAsync(int id);
+        Task<Product?> GetByIdAsync(int id);
         Task<IEnumerable<Product>> GetFeaturedAsync();
         Task<IEnumerable<Product>> GetByCategoryAsync(int categoryId);
 

@@ -4,7 +4,7 @@ using AtelieDaTransformacao.Application.Interfaces;
 namespace AtelieDaTransformacao.Application.Services;
 
 /// <summary>
-/// Serviço responsável por formatar a mensagem com os dados do produto e gerar o link direto para o WhatsApp do vendedor.
+/// Service responsible for formatting the message with product data and generating the direct link to the seller's WhatsApp.
 /// </summary>
 public class WhatsAppService : IWhatsAppService
 {
@@ -28,3 +28,4 @@ public class WhatsAppService : IWhatsAppService
         // Retorna o link final estruturado na API oficial do WhatsApp
         return $"https://wa.me/{_merchantPhoneNumber}?text={encodedMessage}";
     }
+}

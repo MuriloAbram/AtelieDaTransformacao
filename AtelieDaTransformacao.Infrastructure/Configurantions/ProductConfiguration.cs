@@ -10,7 +10,7 @@ namespace AtelieDaTransformacao.Infrastructure.Configurations
         {
             builder.HasKey(p => p.Id); //Define Id como chave primária da entidade Product.
 
-            builder.Property(p => p.Name) //Inicia configuração da propriedade Name; retorna um configurador de propriedade.
+            builder.Property(p => p.Title) //Inicia configuração da propriedade Name; retorna um configurador de propriedade.
 
                 .IsRequired() //Torna a coluna Name obrigatória (não nula) no banco.
                 .HasMaxLength(100);//Define comprimento máximo de 100 caracteres para a coluna Name.
@@ -20,11 +20,11 @@ namespace AtelieDaTransformacao.Infrastructure.Configurations
                 .HasMaxLength(500);//Define comprimento máximo de 500 caracteres para Description; não marca como obrigatória (pode ser nula).
 
             builder.Property(p => p.Price)
-                .HasColumnType("decimal(18,2)"); //•	Configura relacionamento 1 (Product) -> 1/Many (ProductCategory): indica que Product tem uma referência a ProductCategory.
+                .HasColumnType("decimal(18,2)"); //•	Configura tipo do preço.
 
-            builder.HasOne(p => p.ProductCategory) //•	Configura relacionamento 1 (Product) -> 1/Many (ProductCategory): indica que Product tem uma referência a ProductCategory.
-                .WithMany(c => c.Products) // •	Especifica o outro lado do relacionamento: ProductCategory tem muitos Products.
-                .HasForeignKey(p => p.ProductCategoryId);// •	Define ProductCategoryId como chave estrangeira no Product apontando para ProductCategory.
+            builder.HasOne(p => p.Category) //•	Configura relacionamento 1 (Product) -> N (ProductCategory): indica que Product tem a navegação chamada 'Category'.
+                .WithMany(c => c.Product) // •	Especifica o outro lado do relacionamento: ProductCategory expõe a coleção 'Product' (atenção: nome no entity é singular).
+                .HasForeignKey(p => p.CategoryId); // •	Define CategoryId como chave estrangeira no Product apontando para ProductCategory.
         }
     }
 }
