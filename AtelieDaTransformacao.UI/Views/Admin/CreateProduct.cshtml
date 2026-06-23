@@ -68,6 +68,23 @@
                 <a href="@Url.Action("Index", "Admin")" class="btn btn-light rounded-pill px-4">Cancelar</a>
                 <button type="submit" class="btn btn-artisan rounded-pill px-5 fw-semibold shadow-sm">Publicar Arte</button>
             </div>
+            <div class="col-md-6">
+                <label asp-for="CategoryId" class="form-label fw-semibold text-secondary small text-uppercase">Categoria da Peça</label>
+    
+                @if (Model?.Categories != null)
+                {
+                    <select asp-for="CategoryId" class="form-select form-select-lg fs-6 rounded-3" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
+                        <option value="">Selecione uma categoria...</option>
+                    </select>
+                }
+                else
+                {
+                    <select class="form-select form-select-lg fs-6 rounded-3" disabled>
+                        <option>Nenhuma categoria carregada</option>
+                    </select>
+                }
+                <span asp-validation-for="CategoryId" class="text-danger small"></span>
+            </div>
         </form>
     </div>
 </div>
