@@ -1,34 +1,52 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Tasks;
 
 namespace AtelieDaTransformacao.Infrastructure.Identity
 {
-    public static class SeedData //•	Declara uma classe estática SeedData usada para criar dados iniciais (seed) de Identity.
+    public static class SeedData
     {
-        public static async Task InitializeAsync(IServiceProvider serviceProvider) //•	Método público assíncrono que inicializa os dados; recebe IServiceProvider para obter serviços necessários.
+        public static async Task InitializeAsync(IServiceProvider serviceProvider, string adminEmail, string adminPassword)
         {
-            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>(); //•	Resolve o UserManager<IdentityUser> do DI. Lança se o serviço não estiver registrado — necessário para operar no user store.
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-            string email = "admin@ateliedatransformacao.com";//•	Define a string do e-mail que será usado como identificador do usuário seed.
-
-            var user = await userManager.FindByEmailAsync(email);//•	Procura no banco/armazenamento um usuário com esse e-mail; retorna null se não existir.
-
-            if (user == null) //•	Verifica se o usuário não existe; em caso positivo, executa a criação do usuário administrador.
+            // 1. Garante que a regra 'Admin' existe no banco de dados
+            string roleName = "Admin";
+            if (!await roleManager.RoleExistsAsync(roleName))
             {
-                user = new IdentityUser //•	Cria uma nova instância de IdentityUser para representar o usuário a ser criado.
+                await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+
+            // 2. Procura se o usuário administrador já existe
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+            if (adminUser == null)
+            {
+                // Criar o usuário caso não exista
+                adminUser = new IdentityUser
                 {
-                    UserName = email,       //------
-                    Email = email,          //•	Inicializa UserName e Email com o mesmo e-mail e marca EmailConfirmed = true (pulando verificação por e‑mail).
-                    EmailConfirmed = true   //------
+                    UserName = adminEmail,
+                    Email = adminEmail,
+                    EmailConfirmed = true
                 };
 
-                await userManager.CreateAsync(          //•	Persiste o usuário com a senha "Admin@123" no store usando o UserManager (assíncrono). Observação: senha em claro só aceitável para dev/local.
-                    user,
-                    "Admin@123"
-                );
+                var createResult = await userManager.CreateAsync(adminUser, adminPassword);
 
-                //admin@ateliedatransformacao.com
-                //Senha: Admin@123
+                if (createResult.Succeeded)
+                {
+                    // 3. Vincula o usuário recém-criado à Role Admin
+                    await userManager.AddToRoleAsync(adminUser, roleName);
+                }
+            }
+            else
+            {
+                // Se o usuário já existia mas não era Admin, adiciona a permissão
+                if (!await userManager.IsInRoleAsync(adminUser, roleName))
+                {
+                    await userManager.AddToRoleAsync(adminUser, roleName);
+                }
             }
         }
     }

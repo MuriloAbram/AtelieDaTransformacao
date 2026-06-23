@@ -1,69 +1,77 @@
-﻿@* Cadastrar Novo Game — Design Stitch *@
-@model ProductFormViewModel
+﻿@model AtelieDaTransformacao.Application.ViewModels.ProductFormViewModel
 @{
     Layout = "_AdminLayout";
+    ViewData["Title"] = "Nova Peça";
 }
 
-<div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="form-senac">
-            <form asp-action="CreateGame" method="post">
-                <div class="row g-3">
-                    <div class="col-12">
-                        <label asp-for="Title" class="form-label">Título do Game</label>
-                        <input asp-for="Title" class="form-control" placeholder="Ex: God of War Ragnarök" required />
-                    </div>
-
-                    <div class="col-12">
-                        <label asp-for="Description" class="form-label">Descrição</label>
-                        <textarea asp-for="Description" class="form-control" rows="4"
-                                  placeholder="Descreva o game..." required></textarea>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="ReleaseYear" class="form-label">Ano de Lançamento</label>
-                        <input asp-for="ReleaseYear" type="number" class="form-control"
-                               min="1980" max="2030" required />
-                    </div>
-
-                    <div class="col-md-6">
-                        <label asp-for="CategoryId" class="form-label">Categoria</label>
-                        <select asp-for="CategoryId" class="form-select" required>
-                            <option value="">Selecione uma categoria</option>
-                            @foreach (var category in Model.Categories)
-                            {
-                                <option value="@category.Id">@category.Name</option>
-                            }
-                        </select>
-                    </div>
-
-                    <div class="col-12">
-                        <label asp-for="CoverImageUrl" class="form-label">URL da Imagem de Capa</label>
-                        <input asp-for="CoverImageUrl" class="form-control"
-                               placeholder="https://exemplo.com/imagem.png" />
-                    </div>
-
-                    <div class="col-12">
-                        <div class="form-check">
-                            <input asp-for="IsFeatured" class="form-check-input" type="checkbox" />
-                            <label asp-for="IsFeatured" class="form-check-label">
-                                <i class="bi bi-star-fill text-warning"></i> Marcar como destaque
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <hr class="my-4" />
-
-                <div class="d-flex justify-content-between">
-                    <a asp-action="Games" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left"></i> Cancelar
-                    </a>
-                    <button type="submit" class="btn btn-primary-senac">
-                        <i class="bi bi-check-lg"></i> Cadastrar Game
-                    </button>
-                </div>
-            </form>
+<div class="container-fluid px-0" style="max-width: 850px;">
+    <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4 bg-white">
+        <div class="mb-4">
+            <h3 class="fw-bold text-dark mb-1 serif-title">Cadastrar Nova Obra</h3>
+            <p class="text-muted small">Alimente a vitrina pública com produtos exclusivos do Ateliê.</p>
         </div>
+
+        <form asp-action="CreateProduct" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-4"></div>
+
+            <div class="mb-4">
+                <label asp-for="Title" class="form-label fw-semibold text-secondary small text-uppercase">Título Comercial</label>
+                <input asp-for="Title" class="form-control form-control-lg fs-6 rounded-3" placeholder="Ex: Tábua Artisan em Imbuia Maciça" />
+                <span asp-validation-for="Title" class="text-danger small"></span>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold text-secondary small text-uppercase">Preço de Venda (€)</label>
+                    <input name="Price" type="number" step="0.01" class="form-control form-control-lg fs-6 rounded-3" placeholder="0,00" required />
+                </div>
+                
+                <div class="col-md-6">
+                    <label asp-for="CategoryId" class="form-label fw-semibold text-secondary small text-uppercase">Categoria da Peça</label>
+                    <select asp-for="CategoryId" class="form-select form-select-lg fs-6 rounded-3" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
+                        <option value="">Selecione uma categoria...</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="CoverImageUrl" class="form-label fw-semibold text-secondary small text-uppercase">URL da Imagem de Cobertura</label>
+                <input asp-for="CoverImageUrl" class="form-control rounded-3" placeholder="https://exemplo.com/imagem.jpg" />
+                <span asp-validation-for="CoverImageUrl" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Description" class="form-label fw-semibold text-secondary small text-uppercase">Descrição e Detalhes Técnicos</label>
+                <textarea asp-for="Description" class="form-control rounded-3" rows="4" placeholder="Detalhes sobre veios da madeira, acabamento em óleo mineral, resina..."></textarea>
+                <span asp-validation-for="Description" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="ReleaseYear" class="form-label fw-semibold text-secondary small text-uppercase">Ano de Fabricação</label>
+                <input asp-for="ReleaseYear" type="number" class="form-control rounded-3" value="@DateTime.Now.Year" />
+                <span asp-validation-for="ReleaseYear" class="text-danger small"></span>
+            </div>
+
+            <div class="p-3 rounded-4 mb-5" style="background-color: var(--artisan-linen);">
+                <div class="form-check form-switch mb-2">
+                    <input name="IsAvailable" class="form-check-input" type="checkbox" id="checkAvail" value="true" checked />
+                    <label class="form-check-label fw-medium text-dark small" for="checkAvail">Disponível para venda imediata</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input asp-for="IsFeatured" class="form-check-input" type="checkbox" id="checkFeat" />
+                    <label asp-for="IsFeatured" class="form-check-label fw-medium text-dark small" for="checkFeat">Destacar este item na página principal</label>
+                </div>
+            </div>
+
+            <div class="d-flex gap-3 justify-content-end pt-3 border-top">
+                <a href="@Url.Action("Index", "Admin")" class="btn btn-light rounded-pill px-4">Cancelar</a>
+                <button type="submit" class="btn btn-artisan rounded-pill px-5 fw-semibold shadow-sm">Publicar Arte</button>
+            </div>
+        </form>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

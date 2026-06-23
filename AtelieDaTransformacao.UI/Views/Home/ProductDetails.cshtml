@@ -4,43 +4,52 @@
     ViewData["Title"] = Model.Title;
 }
 
-<div class="container mt-5">
+<div class="container py-5 mt-2">
     <div class="row g-5">
-        <div class="col-md-6">
-            <img src="@(string.IsNullOrEmpty(Model.Image) ? "/images/placeholder.jpg" : Model.Image)"
-                 class="img-fluid rounded shadow-sm w-100 object-fit-cover" style="max-height: 500px;" alt="@Model.Title">
+        <div class="col-12 col-lg-6">
+            <div class="rounded-4 bg-white border p-2 shadow-sm overflow-hidden">
+                <img src="@(string.IsNullOrEmpty(Model.Image) ? "/images/placeholder.jpg" : Model.Image)"
+                     class="img-fluid rounded-3 w-100 object-fit-cover" style="max-height: 500px;" alt="@Model.Title" />
+            </div>
         </div>
 
-        <div class="col-md-6 d-flex flex-column justify-content-center">
+        <div class="col-12 col-lg-6 d-flex flex-column justify-content-center">
             <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")" class="text-decoration-none text-dark">Catálogo</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">@Model.CategoryName</li>
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none text-muted small">Coleção</a></li>
+                    <li class="breadcrumb-item active text-gold small fw-bold" aria-current="page">@Model.CategoryName</li>
                 </ol>
             </nav>
-
-            <h1 class="display-5 fw-bold mb-3">@Model.Title</h1>
-            <h2 class="text-success mb-4 fw-semibold">@Model.Price.ToString("C")</h2>
             
-            <hr class="my-4">
+            <h1 class="display-5 serif-title fw-bold text-dark mb-3">@Model.Title</h1>
             
-            <h5 class="fw-bold">Descrição da Peça</h5>
-            <p class="lead text-muted">@Model.Description</p>
+            <div class="p-4 bg-white rounded-4 border border-light-subtle shadow-sm mb-4">
+                <span class="text-muted small d-block mb-1">Preço avaliado de aquisição</span>
+                <h2 class="text-dark fw-bold serif-title m-0">@Model.Price.ToString("C")</h2>
+            </div>
 
-            <div class="mt-4 p-4 bg-light rounded border">
-                <h6 class="fw-bold mb-2"><i class="bi bi-info-circle-fill text-primary"></i> Como funciona a compra?</h6>
-                <p class="small text-muted mb-3">Este ateliê trabalha com peças exclusivas e sob medida. Clique abaixo para alinhar os detalhes da entrega e pagamento diretamente com o artesão.</p>
+            <h6 class="fw-bold text-uppercase tracking-wider text-secondary mb-2" style="font-size: 0.8rem;">Especificações do Objeto</h6>
+            <p class="text-secondary lh-lg fs-6 mb-4">@Model.Description</p>
+
+            <div class="p-4 bg-light rounded-4 border">
+                <div class="d-flex gap-3 align-items-start mb-4">
+                    <i class="bi bi-patch-check-fill text-gold fs-4"></i>
+                    <div>
+                        <h6 class="fw-bold mb-1">Certificado de Autenticidade Manual</h6>
+                        <p class="small text-muted m-0">Por se tratar de um trabalho puramente orgânico, os veios e nós apresentados na fotografia são exclusivos deste lote. O envio é estruturado sob medida.</p>
+                    </div>
+                </div>
                 
                 @if (Model.IsAvailable)
                 {
-                    <a href="@Model.WhatsAppLink" target="_blank" class="btn btn-success btn-lg w-100 py-3 fw-bold shadow-sm">
-                        <i class="bi bi-whatsapp"></i> Fazer Pedido via WhatsApp
+                    <a href="@Model.WhatsAppLink" target="_blank" class="btn btn-gold btn-lg w-100 py-3 rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2 text-uppercase font-monospace tracking-wide small">
+                        <i class="bi bi-whatsapp"></i> Adquirir via WhatsApp Comercial
                     </a>
                 }
                 else
                 {
-                    <button class="btn btn-secondary btn-lg w-100 py-3" disabled>
-                        Esta peça já foi vendida
+                    <button class="btn btn-secondary btn-lg w-100 py-3 rounded-3 cursor-not-allowed" disabled>
+                        <i class="bi bi-slash-circle me-2"></i> Peça Indisponível (Vendida)
                     </button>
                 }
             </div>
