@@ -12,7 +12,7 @@ namespace AtelieDaTransformacao.Infrastructure.Context
 
         public DbSet<Product> Products { get; set; } //•	Define um conjunto (DbSet) para a entidade Product; representa a tabela Products no banco.
         public DbSet<ProductCategory> ProductCategories { get; set; } //•	Define o DbSet para ProductCategory; representa a tabela ProductCategories.
-        public DbSet<Product> Customers { get; set; } //•	Define o DbSet para Customer; representa a tabela Customers.
+        public DbSet<Customer> Customers { get; set; } //•	Define o DbSet para Customer; representa a tabela Customers.
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) //•	Método override onde se configura o modelo EF (mapeamentos, constraints, relacionamentos).
         {

@@ -110,7 +110,7 @@ public class ProductService : IProductService
     public async Task<int> CountAsync()
     {
         var products = await _productRepository.GetAllAsync();
-        return products.Count();
+        return await _productRepository.CountAsync();
     }
 
     public async Task AddAsync(ProductDto productDto)

@@ -63,7 +63,7 @@ namespace AtelieDaTransformacao.API.Controllers
                 Price = dto.Price,
                 Image = dto.Image,
                 CategoryId = dto.CategoryId,
-                IsFeatured = dto.IsFeatured,
+                IsFeatured = true,
                 IsAvailable = true
             };
 

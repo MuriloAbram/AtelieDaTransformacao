@@ -24,7 +24,7 @@ namespace AtelieDaTransformacao.Application.DTOs
         public string Image { get; set; } = string.Empty;
 
         public bool IsAvailable { get; set; }
-        public string IsFeatured { get; set; } = string.Empty;
+        public bool IsFeatured { get; set; }
 
         public int CategoryId { get; set; }
 

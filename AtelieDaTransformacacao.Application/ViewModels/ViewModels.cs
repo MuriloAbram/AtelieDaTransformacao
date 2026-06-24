@@ -15,10 +15,11 @@ public class HomeViewModel
 
 public class DashboardViewModel
 {
-    public int TotalGames { get; set; }
-    public int TotalCategories { get; set; }
-    public int FeaturedGames { get; set; }
-    public IEnumerable<ProductDto> RecentGames { get; set; } = new List<ProductDto>();
+    public IEnumerable<ProductDto> Produtos { get; set; } = new List<ProductDto>();
+    public IEnumerable<ProductCategoryDto> Categorias { get; set; } = new List<ProductCategoryDto>();
+
+    public int TotalProdutos => Produtos.Count();
+    public int ProdutosDestaque => Produtos.Count(p => p.IsFeatured);
 }
 public class ProductFormViewModel
 {

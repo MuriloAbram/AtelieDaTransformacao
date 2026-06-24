@@ -9,10 +9,6 @@ namespace AtelieDaTransformacao.Application.Interfaces;
 /// </summary>
 public interface IWhatsAppService
 {
-
-    internal class IWhatsAppService
-    {
-    }
     string GenerateProductInquiryLink(string productName, decimal price);
 }
 
