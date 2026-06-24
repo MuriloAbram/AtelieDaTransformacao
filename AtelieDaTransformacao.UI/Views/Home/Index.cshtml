@@ -14,13 +14,13 @@
 <div class="container mb-5">
     <div class="d-flex justify-content-center flex-wrap gap-2 mb-5">
         <a href="@Url.Action("Index", "Home")"
-           class="px-4 py-2 text-decoration-none rounded-pill border fw-semibold small transition @(Model.SelectedCategoryId == null ? "bg-wood text-black border-dark" : "bg-black text-secondary border-light-subtle")">
+               class="px-4 py-2 text-decoration-none rounded-pill border fw-semibold small transition @(Model.SelectedCategoryId == null ? "bg-wood text-white border-dark" : "bg-white text-secondary border-light-subtle")">
             Ver Toda a Coleção
         </a>
         @foreach (var cat in Model.Categories)
         {
             <a href="@Url.Action("Index", "Home", new { categoryId = cat.Id })"
-               class="px-4 py-2 text-decoration-none rounded-pill border fw-semibold small transition @(Model.SelectedCategoryId == cat.Id ? "bg-wood text-white border-dark" : "bg-white text-secondary border-light-subtle")">
+                   class="px-4 py-2 text-decoration-none rounded-pill border fw-semibold small transition @(Model.SelectedCategoryId == cat.Id ? "bg-wood text-white border-dark" : "bg-white text-secondary border-light-subtle")">
                 @cat.Name
             </a>
         }
@@ -30,49 +30,43 @@
         @foreach (var prod in Model.Products)
         {
             <div class="col">
-                <div class="card h-100 card-wood border-0 shadow-sm rounded-4 overflow-hidden position-relative transition-card">
-                    
+                <div class="card h-100 card-wood shadow-sm position-relative overflow-hidden">
                     @if (prod.IsFeatured)
                     {
-                        <span class="position-absolute top-0 start-0 bg-warning text-dark px-3 py-1 m-3 rounded-pill small fw-bold shadow-sm" style="z-index: 2;">
-                            ✨ Destaque
+                        <span class="position-absolute top-0 start-0 m-3 badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold shadow-sm" style="z-index: 2;">
+                            <i class="bi bi-stars me-1"></i> Destaque
                         </span>
                     }
-
-                    <div style="height: 280px; overflow: hidden; background-color: #f5f5f5;" class="position-relative">
+                    
+                    <div style="height: 280px; overflow:hidden;" class="bg-light">
                         <img src="@(string.IsNullOrEmpty(prod.Image) ? "/images/placeholder.jpg" : prod.Image)"
-                             class="w-100 h-100 object-fit-cover transition-image" 
-                             alt="@prod.Title" 
-                             onerror="this.src='/images/placeholder.jpg';" />
+                             class="w-100 h-100 object-fit-cover transition-transform" alt="@prod.Title" />
                     </div>
-
-                    <div class="card-body p-4 d-flex flex-column justify-content-between">
-                        <div>
-                            <span class="text-uppercase tracking-wider text-muted small fw-bold d-block mb-1" style="font-size: 0.75rem;">@prod.CategoryName</span>
-                            <h4 class="card-title fw-bold text-dark mb-2 serif-title">@prod.Title</h4>
-                            <p class="text-secondary small text-truncate-2 mb-3 flex-grow-1">@prod.Description</p>
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top border-light-subtle">
+                    
+                    <div class="card-body p-4 d-flex flex-column">
+                        <span class="text-uppercase text-gold fw-bold tracking-wider mb-2" style="font-size: 0.75rem;">@prod.CategoryName</span>
+                        <h4 class="card-title fw-bold text-dark mb-2 serif-title">@prod.Title</h4>
+                        <p class="text-muted small mb-4 flex-grow-1">@prod.Description</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-auto pt-3 border-top border-light">
                             <div>
                                 <span class="text-muted d-block small" style="font-size: 0.7rem;">Valor Unitário</span>
                                 <span class="fs-4 fw-bold text-dark">@prod.Price.ToString("C")</span>
                             </div>
-
-                            <div class="d-flex gap-2 align-items-center">
-                                <a href="@Url.Action("ProductDetails", "Home", new { id = prod.Id })" class="btn btn-sm btn-light border rounded-circle p-2 text-secondary hover-btn" title="Ver Detalhes">
-                                    <i class="bi bi-eye fs-5"></i>
+                            
+                            <div class="d-flex gap-2">
+                                <a href="@Url.Action("ProductDetails", "Home", new { id = prod.Id })" class="btn btn-light rounded-circle px-3 py-2 border" title="Ver Detalhes">
+                                    <i class="bi bi-eye"></i>
                                 </a>
-                                
                                 @if (prod.IsAvailable)
                                 {
-                                    <a href="@prod.WhatsAppLink" target="_blank" class="btn btn-success rounded-pill px-3 py-2 btn-sm fw-semibold shadow-sm d-flex align-items-center gap-2">
+                                    <a href="@prod.WhatsAppLink" target="_blank" class="btn btn-success rounded-pill px-4 fw-medium d-inline-flex align-items-center gap-2 small shadow-sm">
                                         <i class="bi bi-whatsapp"></i> Negociar
                                     </a>
                                 }
                                 else
                                 {
-                                    <button class="btn btn-outline-secondary rounded-pill px-3 py-2 btn-sm border-1 disabled" disabled style="background-color: #f8f9fa;">Reservado</button>
+                                    <button class="btn btn-outline-secondary rounded-pill px-3 small border-0" disabled>Reservado</button>
                                 }
                             </div>
                         </div>
@@ -82,38 +76,3 @@
         }
     </div>
 </div>
-
-<style>
-    /* Transições suaves de aproximação nas fotos */
-    .transition-image {
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .transition-card:hover .transition-image {
-        transform: scale(1.06);
-    }
-
-    /* Elevação suave do card ao passar o rato */
-    .transition-card {
-        background-color: #ffffff;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .transition-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 .75rem 2rem rgba(0,0,0,.06) !important;
-    }
-
-    /* Limitador de linhas de texto para evitar quebrar tamanhos de card */
-    .text-truncate-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    /* Botão de detalhes redondo elegante */
-    .hover-btn:hover {
-        background-color: #212529 !important;
-        color: #ffffff !important;
-    }
-</style>
