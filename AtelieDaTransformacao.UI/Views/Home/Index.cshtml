@@ -14,7 +14,7 @@
 <div class="container mb-5">
     <div class="d-flex justify-content-center flex-wrap gap-2 mb-5">
         <a href="@Url.Action("Index", "Home")"
-           class="px-4 py-2 text-decoration-none rounded-pill border fw-semibold small transition @(Model.SelectedCategoryId == null ? "bg-wood text-white border-dark" : "bg-white text-secondary border-light-subtle")">
+           class="px-4 py-2 text-decoration-none rounded-pill border fw-semibold small transition @(Model.SelectedCategoryId == null ? "bg-wood text-black border-dark" : "bg-black text-secondary border-light-subtle")">
             Ver Toda a Coleção
         </a>
         @foreach (var cat in Model.Categories)
