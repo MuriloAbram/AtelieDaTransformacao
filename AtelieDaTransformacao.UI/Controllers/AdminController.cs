@@ -5,14 +5,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AtelieDaTransformacao.Application.DTOs;
 using AtelieDaTransformacao.Application.Interfaces;
-using AtelieDaTransformacao.Application.ViewModels; 
+using AtelieDaTransformacao.Application.ViewModels;
 
 namespace AtelieDaTransformacao.UI.Controllers;
 
 /// <summary>
 /// Controller protegida que permite ao administrador gerir (Criar, Editar, Eliminar) o catálogo de produtos.
 /// </summary>
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class AdminController : Controller
 {
     private readonly IProductService _productService;
@@ -159,24 +159,31 @@ public class AdminController : Controller
     [HttpGet]
     public IActionResult CreateCategory()
     {
-        // Retorna a View vazia para cadastro
-        return View();
+        // CORREÇÃO: Passa o modelo inicializado para evitar problemas de NullReference no GET
+        return View(new CreateProductCategoryDto());
     }
 
     /// <summary>
-    /// Grava a nova categoria na base de dados.
+    /// Grava a nova categoria na base de dados mapeando o DTO da View para o DTO do Serviço.
     /// </summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateCategory(ProductCategoryDto model)
+    public async Task<IActionResult> CreateCategory(CreateProductCategoryDto model)
     {
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
-        // Altere para o método correto do seu _categoryService (Ex: AddAsync, CreateAsync, etc.)
-        await _categoryService.AddAsync(model);
+        // CORREÇÃO CRUCIAL: Convertendo o CreateProductCategoryDto recebido da View 
+        // para o ProductCategoryDto esperado pelo contrato do serviço da aplicação
+        var categoryDto = new ProductCategoryDto
+        {
+            Name = model.Name
+        };
+
+        // Executa a persistência usando o objeto convertido correto
+        await _categoryService.AddAsync(categoryDto);
 
         // Redireciona de volta para a listagem principal do Admin
         return RedirectToAction(nameof(Index));
