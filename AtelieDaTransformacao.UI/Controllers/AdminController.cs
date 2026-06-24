@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AtelieDaTransformacao.Application.DTOs;
 using AtelieDaTransformacao.Application.Interfaces;
-using AtelieDaTransformacao.Application.ViewModels;
+using AtelieDaTransformacao.Application.ViewModels; 
 
 namespace AtelieDaTransformacao.UI.Controllers;
 

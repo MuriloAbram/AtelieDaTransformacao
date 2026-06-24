@@ -40,8 +40,23 @@ namespace AtelieDaTransformacao.API.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ProductCategoryDto>> Create([FromBody] CreateProductCategoryDto dto)
         {
-            var category = await _productCategoryService.AddAsync(dto);
-            return CreatedAtAction(nameof(GetAll), new { id = category.Id }, category);
+            if (dto == null)
+            {
+                return BadRequest("Os dados da categoria não podem ser nulos.");
+            }
+
+            // 1. Mapeia manualmente o CreateProductCategoryDto para o ProductCategoryDto esperado pelo serviço
+            var categoryDto = new ProductCategoryDto
+            {
+                Name = dto.Name
+                // Se o seu ProductCategoryDto tiver outras propriedades, preencha-as aqui
+            };
+
+            // 2. Executa o método de salvar (sem atribuição de variável, já que ele retorna void/Task)
+            await _productCategoryService.AddAsync(categoryDto);
+
+            // 3. Retorna o status 201 Created passando o próprio objeto que criamos
+            return CreatedAtAction(nameof(GetAll), new { id = categoryDto.Id }, categoryDto);
         }
     }
 }

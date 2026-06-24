@@ -1,16 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.FileProviders;
 using AtelieDaTransformacao.Application.DTOs;
 using AtelieDaTransformacao.Application.Interfaces;
-using System.Reflection.Metadata.Ecma335;
 
 namespace AtelieDaTransformacao.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductsController : Controller
+    public class ProductsController : ControllerBase // Alterado para ControllerBase (ideal para APIs puras)
     {
         private readonly IProductService _productService;
 
@@ -20,21 +19,18 @@ namespace AtelieDaTransformacao.API.Controllers
         }
 
         /// <summary>
-        /// Retorna todas os jogos cadastrados.
+        /// Retorna todos os produtos cadastrados.
         /// </summary>
-        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
         {
-            var product = await _productService.GetAllAsync();
-            return Ok(product);
+            var products = await _productService.GetAllAsync();
+            return Ok(products);
         }
 
         /// <summary>
-        /// Retorna produto por ID
+        /// Retorna um produto por ID.
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDto>> GetById(int id)
         {
@@ -47,14 +43,37 @@ namespace AtelieDaTransformacao.API.Controllers
 
             return Ok(product);
         }
+
+        /// <summary>
+        /// Cadastra um novo produto (Apenas Administradores).
+        /// </summary>
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ProductDto>> Create([FromBody] CreateProductDto dto)
         {
-            var product = await _productService.CreateAsync(dto);
+            if (dto == null)
+            {
+                return BadRequest("Os dados do produto não podem ser nulos.");
+            }
 
-            return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
+            var productDto = new ProductDto
+            {
+                Title = dto.Title,
+                Description = dto.Description,
+                Price = dto.Price,
+                Image = dto.Image,
+                CategoryId = dto.CategoryId,
+                IsFeatured = dto.IsFeatured,
+                IsAvailable = true
+            };
+
+            // Apenas aguarda a execução do método, sem tentar atribuir o retorno à uma variável
+            await _productService.AddAsync(productDto);
+
+            // Retornamos o próprio 'productDto' preenchido. 
+            // Nota: Se o seu banco gera o Id automaticamente, o Id aqui irá como 0. 
+            // Se o Id for crucial no retorno da API, prefira a Opção 2 abaixo.
+            return CreatedAtAction(nameof(GetById), new { id = productDto.Id }, productDto);
         }
-
     }
 }
