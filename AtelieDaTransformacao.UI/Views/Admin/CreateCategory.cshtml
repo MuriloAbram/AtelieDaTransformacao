@@ -11,7 +11,9 @@
             <p class="text-muted small">Crie um novo segmento para organizar as obras e peças do Ateliê.</p>
         </div>
 
-        <form asp-action="CreateCategory" method="post">
+        <form asp-action="CreateCategory" asp-controller="Admin" method="post">
+            @Html.AntiForgeryToken()
+
             <div asp-validation-summary="ModelOnly" class="text-danger small mb-4"></div>
 
             <div class="mb-4">
@@ -22,7 +24,7 @@
 
             <div class="d-flex gap-3 justify-content-end pt-3 border-top">
                 <a href="@Url.Action("Index", "Admin")" class="btn btn-light rounded-pill px-4">Cancelar</a>
-                <button type="submit" class="btn btn-artisan rounded-pill px-5 fw-semibold shadow-sm">Salvar Categoria</button>
+                <button type="submit" class="btn btn-dark rounded-pill px-5 fw-semibold shadow-sm">Salvar Categoria</button>
             </div>
         </form>
     </div>

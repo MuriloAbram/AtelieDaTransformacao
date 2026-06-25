@@ -44,7 +44,7 @@ public class AdminController : Controller
 
         var viewModel = new ProductFormViewModel
         {
-            Categories = categories ?? new List<ProductCategoryDto>(), // Previne o NullReference na View
+            Categories = categories ?? new List<ProductCategoryDto>(),
             ReleaseYear = DateTime.Now.Year
         };
 
@@ -60,13 +60,11 @@ public class AdminController : Controller
     {
         if (!ModelState.IsValid)
         {
-            // Se houver erro, recarrega a lista obrigatoriamente dentro do objeto para a View não quebrar
             var categories = await _categoryService.GetAllAsync();
             model.Categories = categories ?? new List<ProductCategoryDto>();
             return View(model);
         }
 
-        // Mapeia a ViewModel + os campos extras do formulário para o seu DTO de persistência
         var productDto = new ProductDto
         {
             Title = model.Title,
@@ -93,7 +91,6 @@ public class AdminController : Controller
 
         var categories = await _categoryService.GetAllAsync();
 
-        // Converte o DTO retornado do serviço para o formato esperado pela View de Edição
         var viewModel = new ProductFormViewModel
         {
             Id = product.Id,
@@ -105,7 +102,6 @@ public class AdminController : Controller
             Categories = categories ?? new List<ProductCategoryDto>()
         };
 
-        // Passamos dados que não estão na ViewModel via ViewData/ViewBag de forma segura apenas para exibição inicial se necessário
         ViewBag.CurrentPrice = product.Price;
         ViewBag.CurrentAvailable = product.IsAvailable;
 
@@ -159,7 +155,6 @@ public class AdminController : Controller
     [HttpGet]
     public IActionResult CreateCategory()
     {
-        // CORREÇÃO: Passa o modelo inicializado para evitar problemas de NullReference no GET
         return View(new CreateProductCategoryDto());
     }
 
@@ -175,17 +170,12 @@ public class AdminController : Controller
             return View(model);
         }
 
-        // CORREÇÃO CRUCIAL: Convertendo o CreateProductCategoryDto recebido da View 
-        // para o ProductCategoryDto esperado pelo contrato do serviço da aplicação
         var categoryDto = new ProductCategoryDto
         {
             Name = model.Name
         };
 
-        // Executa a persistência usando o objeto convertido correto
         await _categoryService.AddAsync(categoryDto);
-
-        // Redireciona de volta para a listagem principal do Admin
         return RedirectToAction(nameof(Index));
     }
 }
