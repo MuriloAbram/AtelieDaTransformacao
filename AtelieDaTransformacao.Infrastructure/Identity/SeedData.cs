@@ -2,6 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+
 
 namespace AtelieDaTransformacao.Infrastructure.Identity
 {

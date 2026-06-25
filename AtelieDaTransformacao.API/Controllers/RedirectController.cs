@@ -1,39 +1,40 @@
-﻿using AtelieDaTransformacao.Application.DTOs;
-using Microsoft.AspNetCore.Authorization;
+﻿using AtelieDaTransformacao.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AtelieDaTransformacao.API.Controllers
+namespace AtelieDaTransformacao.API.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class RedirectController : Controller
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class RedirectController : Controller
+    private readonly IWhatsAppService _whatsAppService;
+
+    /// <summary>
+    /// Construtor que injeta o serviço de WhatsApp mapeado no Program.cs
+    /// </summary>
+    public RedirectController(IWhatsAppService whatsAppService)
     {
-        public RedirectController()
+        _whatsAppService = whatsAppService;
+    }
+
+    /// <summary>
+    /// Endpoint que recebe os dados do produto e redireciona o cliente direto para o WhatsApp do Ateliê.
+    /// </summary>
+    /// <param name="productName">Nome do produto artesanal que o usuário tem interesse.</param>
+    /// <param name="price">Preço do produto.</param>
+    /// <returns>HTTP 302 (Redirect) para a URL oficial do WhatsApp com a mensagem montada.</returns>
+    [HttpGet("whatsapp")]
+    public IActionResult RedirectToWhatsApp([FromQuery] string productName, [FromQuery] decimal price)
+    {
+        if (string.IsNullOrWhiteSpace(productName))
         {
+            return BadRequest(new { message = "O nome do produto é obrigatório para gerar o redirecionamento." });
         }
 
-        /// <summary>
-        /// Redireciona o usuário para uma URL externa informada via query string.
-        /// </summary>
-        /// <param name="url">URL completa de destino (ex: https://google.com)</param>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult RedirectToUrl([FromQuery] string url)
-        {
-            if (string.IsNullOrWhiteSpace(url))
-            {
-                return BadRequest(new { message = "A URL de destino não pode estar vazia." });
-            }
+        // Invoca a regra de negócio que você definiu na Service
+        string whatsappUrl = _whatsAppService.GenerateProductInquiryLink(productName, price);
 
-            // Valida se a string enviada é uma URL válida e absoluta
-            if (!Uri.TryCreate(url, UriKind.Absolute, out var uriResult) ||
-                (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
-            {
-                return BadRequest(new { message = "A URL fornecida é inválida. Certifique-se de incluir http:// ou https://" });
-            }
-
-            // Retorna o HTTP Status 302 para o navegador mudar de página
-            return Redirect(url);
-        }
+        // Executa o redirecionamento HTTP nativo
+        return Redirect(whatsappUrl);
     }
 }
