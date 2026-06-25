@@ -7,9 +7,9 @@
 //
 // O que é configurado aqui:
 // 1. Entity Framework Core (conexão com banco de dados)
-// 2. ASP.NET Core Identity (autenticação e autorização)
+// 2. ASP.NET Core Identity & Autenticação JWT (Token seguro stateless)
 // 3. Dependency Injection (repositórios e serviços)
-// 4. Swagger (documentação da API)
+// 4. Swagger (configurado com suporte a envio de Token Bearer)
 // 5. CORS (permissões de acesso cross-origin)
 // =============================================================================
 
@@ -19,70 +19,68 @@ using AtelieDaTransformacao.Domain.Interfaces;
 using AtelieDaTransformacao.Infrastructure.Context;
 using AtelieDaTransformacao.Infrastructure.Identity;
 using AtelieDaTransformacao.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
-using Microsoft.AspNetCore.OpenApi;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // =====================================================================
 // 1. ENTITY FRAMEWORK CORE — Configuração do banco de dados
 // =====================================================================
-// 📌 CONCEITO: AddDbContext registra o DbContext no container de DI.
-// UseSqlServer configura o Entity Framework para usar o SQL Server.
-// A connection string é lida do arquivo appsettings.json.
-// =====================================================================
 builder.Services.AddDbContext<AtelieDaTransformacaoDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // =====================================================================
-// 2. ASP.NET CORE IDENTITY — Autenticação e Autorização
-// =====================================================================
-// 📌 CONCEITO: Identity é o sistema de autenticação do ASP.NET Core.
-// .AddRoles<IdentityRole>() ativa o suporte aos papéis (Admin, User, etc).
-// sem essa linha, o método 'RoleExistsAsync' lança erro de compilação/execução.
+// 2. ASP.NET CORE IDENTITY & CONFIGURAÇÃO JWT — Autenticação e Autorização
 // =====================================================================
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
-    // Configurações de senha (simplificadas para ensino)
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 6;
 })
-.AddRoles<IdentityRole>() // 💡 ADICIONADO: Habilita o gerenciamento de Roles no sistema!
+.AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<AtelieDaTransformacaoDbContext>()
 .AddDefaultTokenProviders();
 
-// Configuração de Cookie Authentication para a API
-builder.Services.ConfigureApplicationCookie(options =>
+// 💡 CONFIGURAÇÃO DO JWT: Força a API a proteger os endpoints com Token Bearer (sem cookies)
+var jwtSecret = builder.Configuration["JwtSettings:Secret"] ?? "ChaveMestraSuperSecretaDoAtelieDaTransformacao2026!";
+var key = Encoding.ASCII.GetBytes(jwtSecret);
+
+builder.Services.AddAuthentication(options =>
 {
-    options.Events.OnRedirectToLogin = context =>
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        context.Response.StatusCode = 401;
-        return Task.CompletedTask;
-    };
-    options.Events.OnRedirectToAccessDenied = context =>
-    {
-        context.Response.StatusCode = 403;
-        return Task.CompletedTask;
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ClockSkew = TimeSpan.Zero
     };
 });
 
 // =====================================================================
 // 3. DEPENDENCY INJECTION — Registro de Repositórios e Serviços
 // =====================================================================
-// 📌 CONCEITO: Dependency Injection (DI)
-// AddScoped registra um serviço com ciclo de vida "por requisição".
-// Isso significa que uma nova instância é criada para cada requisição HTTP.
-// =====================================================================
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
-builder.Services.AddScoped<IWhatsAppService, WhatsAppService>(); // Serviço do WhatsApp
+builder.Services.AddScoped<IWhatsAppService, WhatsAppService>();
 
 // =====================================================================
 // 4. CONTROLLERS
@@ -90,11 +88,7 @@ builder.Services.AddScoped<IWhatsAppService, WhatsAppService>(); // Serviço do 
 builder.Services.AddControllers();
 
 // =====================================================================
-// 5. SWAGGER — Documentação automática da API
-// =====================================================================
-// 📌 CONCEITO: Swagger gera automaticamente uma interface visual
-// para testar os endpoints da API no navegador.
-// Acesse: https://localhost:PORTA/swagger
+// 5. SWAGGER — Documentação automática preparada para JWT
 // =====================================================================
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -104,6 +98,31 @@ builder.Services.AddSwaggerGen(options =>
         Title = "Atelie da Transformação API",
         Version = "v1",
         Description = "API REST do sistema Ateliê da Transformação — E-commerce integrado ao WhatsApp"
+    });
+
+    // 💡 ADICIONADO: Adiciona o botão "Authorize" cadeado no Swagger para permitir testes com o Token JWT
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "Autenticação baseada em Token JWT. Insira: Bearer {seu_token}",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
     });
 });
 
@@ -125,13 +144,8 @@ var app = builder.Build();
 // =====================================================================
 // PIPELINE DE MIDDLEWARES
 // =====================================================================
-// 📌 CONCEITO: Middlewares são executados em sequência para cada requisição.
-// A ordem importa! Cada middleware processa a requisição e passa adiante.
-// =====================================================================
-
 if (app.Environment.IsDevelopment())
 {
-    // Swagger só é habilitado em ambiente de desenvolvimento
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -139,7 +153,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
-// 📌 IMPORTANTE: UseAuthentication ANTES de UseAuthorization
+// 📌 IMPORTANTE: UseAuthentication processa o JWT antes do UseAuthorization aplicar as regras
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -148,9 +162,6 @@ app.MapControllers();
 // =====================================================================
 // SEED DATA — Popula o banco com dados iniciais do Administrador
 // =====================================================================
-// 📌 CONCEITO: O seed é executado na inicialização da aplicação.
-// Usamos o escopo criado para passar os parâmetros exigidos pelo SeedData do Ateliê.
-// =====================================================================
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -158,7 +169,6 @@ using (var scope = app.Services.CreateScope())
     var adminEmail = builder.Configuration["AdminSettings:Email"] ?? "admin@atelie.com";
     var adminPassword = builder.Configuration["AdminSettings:Password"] ?? "Admin@Atelie123";
 
-    // Executa o método InitializeAsync do seu primeiro SeedData sem alterá-lo
     await SeedData.InitializeAsync(services, adminEmail, adminPassword);
 }
 
