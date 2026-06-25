@@ -5,8 +5,7 @@ using System.Text;
 namespace AtelieDaTransformacao.Domain.Entities
 {
     /// <summary>
-    /// BASE
-    /// Entidade de Produtos
+    /// BASE - Entidade de Produtos
     /// </summary>
     public class Product
     {
@@ -19,12 +18,18 @@ namespace AtelieDaTransformacao.Domain.Entities
         public bool IsFeatured { get; set; }
 
         /// <summary>
+        /// Quantidade atual de itens disponíveis no estoque físico.
+        /// </summary>
+        public int StockQuantity { get; set; }
+
+        /// <summary>
         /// Data de criação do registro no BD
         /// </summary>
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public virtual ProductCategory? Category { get; set; }
     }
+
     /// <summary>
     /// Entidade de clientes (representa a tabela Customers).
     /// </summary>

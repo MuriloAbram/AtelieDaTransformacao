@@ -24,9 +24,6 @@ public class AdminController : Controller
         _categoryService = categoryService;
     }
 
-    /// <summary>
-    /// Lista todos os produtos cadastrados num formato de tabela de gestão administrativa.
-    /// </summary>
     [HttpGet]
     public async Task<IActionResult> Index()
     {
@@ -34,9 +31,6 @@ public class AdminController : Controller
         return View(products);
     }
 
-    /// <summary>
-    /// Exibe o formulário de criação de um novo produto usando a ViewModel correta.
-    /// </summary>
     [HttpGet]
     public async Task<IActionResult> CreateProduct()
     {
@@ -51,9 +45,6 @@ public class AdminController : Controller
         return View(viewModel);
     }
 
-    /// <summary>
-    /// Grava o novo produto criado na base de dados fazendo a conversão da ViewModel para DTO.
-    /// </summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateProduct(ProductFormViewModel model, decimal price, bool isAvailable)
@@ -74,15 +65,13 @@ public class AdminController : Controller
             Price = price,
             IsAvailable = isAvailable,
             IsFeatured = true,
+            StockQuantity = model.StockQuantity // 👈 Persistência mapeada
         };
 
         await _productService.AddAsync(productDto);
         return RedirectToAction(nameof(Index));
     }
 
-    /// <summary>
-    /// Exibe o formulário de edição convertendo o DTO do banco para a ViewModel da View.
-    /// </summary>
     [HttpGet]
     public async Task<IActionResult> EditProduct(int id)
     {
@@ -99,6 +88,7 @@ public class AdminController : Controller
             CoverImageUrl = product.Image,
             CategoryId = product.CategoryId,
             IsFeatured = true,
+            StockQuantity = product.StockQuantity, // 👈 Carrega do banco
             Categories = categories ?? new List<ProductCategoryDto>()
         };
 
@@ -108,9 +98,6 @@ public class AdminController : Controller
         return View(viewModel);
     }
 
-    /// <summary>
-    /// Atualiza as informações do produto editado na base de dados.
-    /// </summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EditProduct(ProductFormViewModel model, decimal price, bool isAvailable)
@@ -131,16 +118,14 @@ public class AdminController : Controller
             CategoryId = model.CategoryId,
             Price = price,
             IsAvailable = isAvailable,
-            IsFeatured = true
+            IsFeatured = true,
+            StockQuantity = model.StockQuantity // 👈 Salva modificação
         };
 
         await _productService.UpdateAsync(productDto);
         return RedirectToAction(nameof(Index));
     }
 
-    /// <summary>
-    /// Remove um produto do catálogo através do ID fornecido.
-    /// </summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteProduct(int id)
@@ -149,18 +134,12 @@ public class AdminController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    /// <summary>
-    /// Exibe o formulário para criação de uma nova categoria de produto.
-    /// </summary>
     [HttpGet]
     public IActionResult CreateCategory()
     {
         return View(new CreateProductCategoryDto());
     }
 
-    /// <summary>
-    /// Grava a nova categoria na base de dados mapeando o DTO da View para o DTO do Serviço.
-    /// </summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateCategory(CreateProductCategoryDto model)

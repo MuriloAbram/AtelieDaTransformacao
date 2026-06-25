@@ -12,11 +12,12 @@
         </div>
 
         <form asp-action="CreateProduct" method="post">
+            @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger small mb-4"></div>
 
             <div class="mb-4">
                 <label asp-for="Title" class="form-label fw-semibold text-secondary small text-uppercase">Título Comercial</label>
-                <input asp-for="Title" class="form-control form-control-lg fs-6 rounded-3" placeholder="Ex: Tábua Artisan em Imbuia Maciça" />
+                <input asp-for="Title" class="form-control form-control-lg fs-6 rounded-3" placeholder="Ex: Tábua Artisan em Imbuia Maciça" required />
                 <span asp-validation-for="Title" class="text-danger small"></span>
             </div>
 
@@ -28,7 +29,7 @@
                 
                 <div class="col-md-6">
                     <label asp-for="CategoryId" class="form-label fw-semibold text-secondary small text-uppercase">Categoria da Peça</label>
-                    <select asp-for="CategoryId" class="form-select form-select-lg fs-6 rounded-3" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
+                    <select asp-for="CategoryId" class="form-select form-select-lg fs-6 rounded-3" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))" required>
                         <option value="">Selecione uma categoria...</option>
                     </select>
                     <span asp-validation-for="CategoryId" class="text-danger small"></span>
@@ -37,7 +38,7 @@
 
             <div class="mb-4">
                 <label asp-for="CoverImageUrl" class="form-label fw-semibold text-secondary small text-uppercase">URL da Imagem de Cobertura</label>
-                <input asp-for="CoverImageUrl" class="form-control rounded-3" placeholder="https://exemplo.com/imagem.jpg" />
+                <input asp-for="CoverImageUrl" class="form-control rounded-3" placeholder="https://exemplo.com/imagem.jpg" required />
                 <span asp-validation-for="CoverImageUrl" class="text-danger small"></span>
             </div>
 
@@ -47,13 +48,20 @@
                 <span asp-validation-for="Description" class="text-danger small"></span>
             </div>
 
-            <div class="mb-4">
-                <label asp-for="ReleaseYear" class="form-label fw-semibold text-secondary small text-uppercase">Ano de Fabricação</label>
-                <input asp-for="ReleaseYear" type="number" class="form-control rounded-3" value="@DateTime.Now.Year" />
-                <span asp-validation-for="ReleaseYear" class="text-danger small"></span>
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <label asp-for="ReleaseYear" class="form-label fw-semibold text-secondary small text-uppercase">Ano de Fabricação</label>
+                    <input asp-for="ReleaseYear" type="number" class="form-control rounded-3" value="@DateTime.Now.Year" required />
+                    <span asp-validation-for="ReleaseYear" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="StockQuantity" class="form-label fw-semibold text-secondary small text-uppercase">Quantidade em Estoque</label>
+                    <input asp-for="StockQuantity" type="number" min="0" class="form-control rounded-3" placeholder="Ex: 5" required />
+                    <span asp-validation-for="StockQuantity" class="text-danger small"></span>
+                </div>
             </div>
 
-            <div class="p-3 rounded-4 mb-5" style="background-color: var(--artisan-linen);">
+            <div class="p-3 rounded-4 mb-5" style="background-color: var(--artisan-linen, #f8f9fa);">
                 <div class="form-check form-switch mb-2">
                     <input name="IsAvailable" class="form-check-input" type="checkbox" id="checkAvail" value="true" checked />
                     <label class="form-check-label fw-medium text-dark small" for="checkAvail">Disponível para venda imediata</label>
@@ -66,24 +74,7 @@
 
             <div class="d-flex gap-3 justify-content-end pt-3 border-top">
                 <a href="@Url.Action("Index", "Admin")" class="btn btn-light rounded-pill px-4">Cancelar</a>
-                <button type="submit" class="btn btn-artisan rounded-pill px-5 fw-semibold shadow-sm">Publicar Arte</button>
-            </div>
-            <div class="col-md-6">
-                <label asp-for="CategoryId" class="form-label fw-semibold text-secondary small text-uppercase">Categoria da Peça</label>
-    
-                @if (Model?.Categories != null)
-                {
-                    <select asp-for="CategoryId" class="form-select form-select-lg fs-6 rounded-3" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
-                        <option value="">Selecione uma categoria...</option>
-                    </select>
-                }
-                else
-                {
-                    <select class="form-select form-select-lg fs-6 rounded-3" disabled>
-                        <option>Nenhuma categoria carregada</option>
-                    </select>
-                }
-                <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                <button type="submit" class="btn btn-dark rounded-pill px-5 fw-semibold shadow-sm">Publicar Arte</button>
             </div>
         </form>
     </div>
