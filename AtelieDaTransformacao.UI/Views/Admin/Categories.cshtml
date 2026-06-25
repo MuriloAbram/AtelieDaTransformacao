@@ -1,0 +1,65 @@
+﻿@model IEnumerable<AtelieDaTransformacao.Application.DTOs.ProductCategoryDto>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Gestão de Categorias";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-5">
+    <div>
+        <h2 class="fw-bold text-dark m-0">Categorias do Ateliê</h2>
+        <p class="text-muted small m-0">Gerencie os segmentos da sua loja (Ex: Tábuas, Mesas, Aparadores).</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="@Url.Action("Index", "Admin")" class="btn btn-outline-dark rounded-pill px-4">
+            Voltar para Peças
+        </a>
+        <a href="@Url.Action("CreateCategory", "Admin")" class="btn btn-dark rounded-pill px-4">
+            <i class="bi bi-plus-lg me-2"></i>Nova Categoria
+        </a>
+    </div>
+</div>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger rounded-4 border-0 mb-4 shadow-sm">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success rounded-4 border-0 mb-4 shadow-sm">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light border-bottom border-light">
+                <tr class="small text-muted text-uppercase tracking-wider">
+                    <th class="ps-4">ID</th>
+                    <th>Nome da Categoria</th>
+                    <th class="text-end pe-4">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cat in Model)
+                {
+                    <tr>
+                        <td class="ps-4 fw-bold text-secondary">#@cat.Id</td>
+                        <td><span class="fw-bold text-dark">@cat.Name</span></td>
+                        <td class="text-end pe-4">
+                            <form asp-action="DeleteCategory" asp-controller="Admin" method="post" onsubmit="return confirm('Excluir permanentemente a categoria @cat.Name?');">
+                                <input type="hidden" name="id" value="@cat.Id" />
+                                <button type="submit" class="btn btn-sm btn-link text-danger text-decoration-none">
+                                    <i class="bi bi-trash3 me-1"></i>Remover
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

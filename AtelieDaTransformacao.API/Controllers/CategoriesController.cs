@@ -2,7 +2,8 @@
 using AtelieDaTransformacao.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace AtelieDaTransformacao.API.Controllers
 {
@@ -10,9 +11,6 @@ namespace AtelieDaTransformacao.API.Controllers
     [Route("api/[controller]")]
     public class CategoriesController : Controller
     {
-        /// <summary>
-        /// Encapsulamento
-        /// </summary>
         private readonly IProductCategoryService _productCategoryService;
 
         public CategoriesController(IProductCategoryService productCategoryService)
@@ -21,9 +19,8 @@ namespace AtelieDaTransformacao.API.Controllers
         }
 
         /// <summary>
-        /// Volta todas as cayegorias 
+        /// Volta todas as categorias
         /// </summary>
-        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductCategoryDto>>> GetAll()
         {
@@ -34,10 +31,7 @@ namespace AtelieDaTransformacao.API.Controllers
         /// <summary>
         /// Adm cria categoria
         /// </summary>
-        /// <param name="dto"></param>
-        /// <returns></returns>
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ProductCategoryDto>> Create([FromBody] CreateProductCategoryDto dto)
         {
             if (dto == null)
@@ -45,18 +39,44 @@ namespace AtelieDaTransformacao.API.Controllers
                 return BadRequest("Os dados da categoria não podem ser nulos.");
             }
 
-            // 1. Mapeia manualmente o CreateProductCategoryDto para o ProductCategoryDto esperado pelo serviço
             var categoryDto = new ProductCategoryDto
             {
                 Name = dto.Name
-                // Se o seu ProductCategoryDto tiver outras propriedades, preencha-as aqui
             };
 
-            // 2. Executa o método de salvar (sem atribuição de variável, já que ele retorna void/Task)
             await _productCategoryService.AddAsync(categoryDto);
 
-            // 3. Retorna o status 201 Created passando o próprio objeto que criamos
             return CreatedAtAction(nameof(GetAll), new { id = categoryDto.Id }, categoryDto);
+        }
+
+        /// <summary>
+        /// Deleta uma categoria indesejada pelo ID
+        /// </summary>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            // 1. Busca se a categoria existe antes de tentar deletar
+            var category = await _productCategoryService.GetByIdAsync(id);
+            if (category == null)
+            {
+                return NotFound(new { message = $"A categoria com o ID {id} não foi encontrada." });
+            }
+
+            try
+            {
+                // 2. Executa a exclusão na camada de serviço
+                await _productCategoryService.DeleteAsync(id);
+                return Ok(new { message = "Categoria removida com sucesso do Ateliê!" });
+            }
+            catch (System.Exception ex)
+            {
+                // 3. Evita que o app quebre se houver restrição de chave estrangeira no banco de dados
+                return BadRequest(new
+                {
+                    message = "Não foi possível deletar a categoria. Verifique se não existem produtos vinculados a ela.",
+                    details = ex.Message
+                });
+            }
         }
     }
 }

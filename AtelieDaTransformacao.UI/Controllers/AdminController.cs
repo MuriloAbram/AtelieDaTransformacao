@@ -10,7 +10,7 @@ using AtelieDaTransformacao.Application.ViewModels;
 namespace AtelieDaTransformacao.UI.Controllers;
 
 /// <summary>
-/// Controller protegida que permite ao administrador gerir (Criar, Editar, Eliminar) o catálogo de produtos.
+/// Controller protegida que permite ao administrador gerir (Criar, Editar, Eliminar) o catálogo de produtos e categorias.
 /// </summary>
 [Authorize(Roles = "Admin")]
 public class AdminController : Controller
@@ -156,5 +156,40 @@ public class AdminController : Controller
 
         await _categoryService.AddAsync(categoryDto);
         return RedirectToAction(nameof(Index));
+    }
+
+    // =====================================================================
+    // NOVOS MÉTODOS ADICIONADOS PARA AS CATEGORIAS NO DASHBOARD
+    // =====================================================================
+
+    /// <summary>
+    /// Lista todas as categorias cadastradas na View correspondente.
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> Categories()
+    {
+        var categories = await _categoryService.GetAllAsync();
+        return View(categories);
+    }
+
+    /// <summary>
+    /// Remove uma categoria do sistema tratando erros de dependência de chaves.
+    /// </summary>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteCategory(int id)
+    {
+        try
+        {
+            await _categoryService.DeleteAsync(id);
+            TempData["SuccessMessage"] = "Categoria removida com sucesso!";
+        }
+        catch (Exception)
+        {
+            // Impede a quebra caso a categoria tenha chaves vinculadas a produtos
+            TempData["ErrorMessage"] = "Não é possível apagar esta categoria porque existem produtos associados a ela.";
+        }
+
+        return RedirectToAction(nameof(Categories));
     }
 }
