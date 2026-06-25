@@ -1,3 +1,6 @@
+/* =============================================================================
+   ATELIÊ DA TRANSFORMAÇÃO - DESIGN SYSTEM (VARIÁVEIS GLOBAIS)
+   ============================================================================= */
 :root {
     --artisan-clay: #b85d43; /* Terracota / Argila */
     --artisan-wood: #3d2b1f; /* Castanho Madeira Nobre */
@@ -7,11 +10,13 @@
     --text-main: #2a2421; /* Antracite Orgânico */
 }
 
+/* Base da Aplicação */
 body {
     background-color: var(--artisan-sand);
     color: var(--text-main);
     font-family: 'Plus Jakarta Sans', sans-serif;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
 }
 
 .serif-title {
@@ -25,9 +30,23 @@ body {
     border-bottom: 3px solid var(--artisan-clay);
 }
 
+.navbar-artisan {
+    backdrop-filter: blur(10px);
+}
+
 .text-gold {
     color: var(--artisan-gold) !important;
 }
+
+.nav-link-artisan {
+    color: rgba(255, 255, 255, 0.75) !important;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+    .nav-link-artisan:hover {
+        color: var(--artisan-gold) !important;
+        transform: translateY(-1px);
+    }
 
 /* Botões Estilizados */
 .btn-artisan {
@@ -54,6 +73,7 @@ body {
     .btn-outline-artisan:hover {
         background-color: var(--artisan-linen);
         color: var(--artisan-wood) !important;
+        box-shadow: 0 4px 15px rgba(243, 238, 230, 0.2);
     }
 
 /* Filtros de Categoria Estilo Pill */
@@ -98,3 +118,28 @@ body {
     border-color: var(--artisan-clay);
     box-shadow: 0 0 0 0.25rem rgba(184, 93, 67, 0.15);
 }
+
+/* Botão Flutuante do WhatsApp */
+.whatsapp-float {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #25d366;
+    color: white !important;
+    border-radius: 50px;
+    text-align: center;
+    font-size: 24px;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+    z-index: 1000;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+    .whatsapp-float:hover {
+        transform: scale(1.1) translateY(-5px);
+        box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
+    }

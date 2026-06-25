@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AtelieDaTransformacacao.Application\AtelieDaTransformacao.Application.csproj" />
+    <ProjectReference Include="..\AtelieDaTransformacao.Domain\AtelieDaTransformacao.Domain.csproj" />
     <ProjectReference Include="..\AtelieDaTransformacao.Infrastructure\AtelieDaTransformacao.Infrastructure.csproj" />
   </ItemGroup>
 
