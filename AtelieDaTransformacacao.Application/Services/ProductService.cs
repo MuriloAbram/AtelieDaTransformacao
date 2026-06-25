@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AtelieDaTransformacao.Application.DTOs;
 using AtelieDaTransformacao.Application.Interfaces;
@@ -38,6 +37,8 @@ public class ProductService : IProductService
                 Price = item.Price,
                 Image = item.Image,
                 CategoryId = item.CategoryId,
+                StockQuantity = item.StockQuantity,
+                IsAvailable = item.StockQuantity > 0,
                 WhatsAppLink = _whatsAppService.GenerateProductInquiryLink(item.Title, item.Price)
             });
         }
@@ -46,7 +47,6 @@ public class ProductService : IProductService
 
     public async Task<ProductDto?> GetByIdAsync(int id)
     {
-        // Repositório já retorna um único Product? — não é necessário chamar FirstOrDefault()
         var item = await _productRepository.GetByIdAsync(id);
         if (item == null) return null;
 
@@ -58,6 +58,8 @@ public class ProductService : IProductService
             Price = item.Price,
             Image = item.Image,
             CategoryId = item.CategoryId,
+            StockQuantity = item.StockQuantity,
+            IsAvailable = item.StockQuantity > 0,
             WhatsAppLink = _whatsAppService.GenerateProductInquiryLink(item.Title, item.Price)
         };
     }
@@ -77,16 +79,16 @@ public class ProductService : IProductService
                 Price = item.Price,
                 Image = item.Image,
                 CategoryId = item.CategoryId,
+                StockQuantity = item.StockQuantity,
+                IsAvailable = item.StockQuantity > 0,
                 WhatsAppLink = _whatsAppService.GenerateProductInquiryLink(item.Title, item.Price)
             });
         }
         return dtos;
     }
 
-    // IMPLEMENTAÇÃO OBRIGATÓRIA DA INTERFACE
     public async Task<IEnumerable<ProductDto>> GetFeaturedAsync()
     {
-        // Caso o repositório não tenha GetFeaturedAsync, você pode buscar todos e filtrar, ou ajustar seu repositório
         var products = await _productRepository.GetAllAsync();
         var dtos = new List<ProductDto>();
 
@@ -100,17 +102,28 @@ public class ProductService : IProductService
                 Price = item.Price,
                 Image = item.Image,
                 CategoryId = item.CategoryId,
+                StockQuantity = item.StockQuantity,
+                IsAvailable = item.StockQuantity > 0,
                 WhatsAppLink = _whatsAppService.GenerateProductInquiryLink(item.Title, item.Price)
             });
         }
         return dtos;
     }
 
-    // IMPLEMENTAÇÃO OBRIGATÓRIA DA INTERFACE
     public async Task<int> CountAsync()
     {
-        var products = await _productRepository.GetAllAsync();
         return await _productRepository.CountAsync();
+    }
+
+    public async Task<bool> DebitStockAsync(int productId, int quantity)
+    {
+        var product = await _productRepository.GetByIdAsync(productId);
+        if (product == null || product.StockQuantity < quantity)
+            return false;
+
+        product.StockQuantity -= quantity;
+        await _productRepository.UpdateAsync(product);
+        return true;
     }
 
     public async Task AddAsync(ProductDto productDto)
@@ -121,23 +134,23 @@ public class ProductService : IProductService
             Description = productDto.Description,
             Price = productDto.Price,
             Image = productDto.Image,
-            CategoryId = productDto.CategoryId
+            CategoryId = productDto.CategoryId,
+            StockQuantity = productDto.StockQuantity
         };
         await _productRepository.AddAsync(product);
     }
 
     public async Task UpdateAsync(ProductDto productDto)
     {
-        // Repositório já retorna um único Product? — não é necessário chamar FirstOrDefault()
         var product = await _productRepository.GetByIdAsync(productDto.Id);
         if (product == null) throw new Exception("Product not found");
 
-        // Copia os valores do DTO para a entidade antes de persistir
         product.Title = productDto.Title;
         product.Description = productDto.Description;
         product.Price = productDto.Price;
         product.Image = productDto.Image;
         product.CategoryId = productDto.CategoryId;
+        product.StockQuantity = productDto.StockQuantity;
 
         await _productRepository.UpdateAsync(product);
     }
@@ -146,5 +159,4 @@ public class ProductService : IProductService
     {
         await _productRepository.DeleteAsync(id);
     }
-
 }

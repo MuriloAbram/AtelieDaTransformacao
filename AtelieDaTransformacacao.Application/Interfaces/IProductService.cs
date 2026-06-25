@@ -9,19 +9,16 @@ namespace AtelieDaTransformacao.Application.Interfaces;
 /// </summary>
 public interface IProductService
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
     Task<IEnumerable<ProductDto>> GetAllAsync();
     Task<ProductDto?> GetByIdAsync(int id);
     Task<IEnumerable<ProductDto>> GetFeaturedAsync();
     Task<IEnumerable<ProductDto>> GetByCategoryAsync(int categoryId);
+
     /// <summary>
-    /// CRUD - adiciona, deleta, atualiza e conta Produtos existentes
+    /// Realiza a baixa de estoque quando uma venda é aprovada. Retorna falso se não houver saldo suficiente.
     /// </summary>
-    /// <param name="productDto"></param>
-    /// <returns></returns>
+    Task<bool> DebitStockAsync(int productId, int quantity);
+
     Task AddAsync(ProductDto productDto);
     Task UpdateAsync(ProductDto productDto);
     Task DeleteAsync(int id);
