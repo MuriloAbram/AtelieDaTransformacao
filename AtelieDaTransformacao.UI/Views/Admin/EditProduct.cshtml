@@ -24,8 +24,9 @@
 
             <div class="row g-4 mb-4">
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold text-secondary small text-uppercase">Preço Ajustado (€)</label>
-                    <input name="Price" type="number" step="0.01" class="form-control form-control-lg fs-6 rounded-3" value="@ViewBag.CurrentPrice" required />
+                    <label asp-for="Price" class="form-label fw-semibold text-secondary small text-uppercase">Preço Ajustado (€)</label>
+                    <input asp-for="Price" type="number" step="0.01" class="form-control form-control-lg fs-6 rounded-3" required />
+                    <span asp-validation-for="Price" class="text-danger small"></span>
                 </div>
                 <div class="col-md-6">
                     <label asp-for="CategoryId" class="form-label fw-semibold text-secondary small text-uppercase">Alterar Categoria</label>
@@ -47,20 +48,27 @@
                 <span asp-validation-for="Description" class="text-danger small"></span>
             </div>
 
-            <div class="mb-4">
-                <label asp-for="StockQuantity" class="form-label fw-semibold text-secondary small text-uppercase">Atualizar Quantidade em Estoque</label>
-                <input asp-for="StockQuantity" type="number" min="0" class="form-control rounded-3" required />
-                <span asp-validation-for="StockQuantity" class="text-danger small"></span>
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <label asp-for="ReleaseYear" class="form-label fw-semibold text-secondary small text-uppercase">Ano de Fabricação</label>
+                    <input asp-for="ReleaseYear" type="number" class="form-control rounded-3" required />
+                    <span asp-validation-for="ReleaseYear" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="StockQuantity" class="form-label fw-semibold text-secondary small text-uppercase">Atualizar Quantidade em Estoque</label>
+                    <input asp-for="StockQuantity" type="number" min="0" class="form-control rounded-3" required />
+                    <span asp-validation-for="StockQuantity" class="text-danger small"></span>
+                </div>
             </div>
 
             <div class="p-3 bg-light rounded-4 mb-5">
                 <div class="form-check form-switch mb-2">
-                    <input name="IsAvailable" class="form-check-input" type="checkbox" id="checkAvail" value="true" @(ViewBag.CurrentAvailable == true ? "checked" : "") />
+                    <input asp-for="IsAvailable" class="form-check-input" type="checkbox" id="checkAvail" />
                     <label class="form-check-label fw-medium text-dark small" for="checkAvail">Manter visível e disponível para compra</label>
                 </div>
                 <div class="form-check form-switch">
                     <input asp-for="IsFeatured" class="form-check-input" type="checkbox" id="checkFeat" />
-                    <label asp-for="IsFeatured" class="form-check-label fw-medium text-dark small" for="checkFeat">Fixar em destaque na página principal</label>
+                    <label class="form-check-label fw-medium text-dark small" for="checkFeat">Fixar em destaque na página principal</label>
                 </div>
             </div>
 

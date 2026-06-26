@@ -39,7 +39,8 @@ public class AdminController : Controller
         var viewModel = new ProductFormViewModel
         {
             Categories = categories ?? new List<ProductCategoryDto>(),
-            ReleaseYear = DateTime.Now.Year
+            IsAvailable = true,
+            IsFeatured = false
         };
 
         return View(viewModel);
@@ -47,7 +48,7 @@ public class AdminController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateProduct(ProductFormViewModel model, decimal price, bool isAvailable)
+    public async Task<IActionResult> CreateProduct(ProductFormViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -62,10 +63,10 @@ public class AdminController : Controller
             Description = model.Description,
             Image = model.CoverImageUrl,
             CategoryId = model.CategoryId,
-            Price = price,
-            IsAvailable = isAvailable,
-            IsFeatured = true,
-            StockQuantity = model.StockQuantity // 👈 Persistência mapeada
+            Price = model.Price,
+            IsAvailable = model.IsAvailable, // 🛠️ Corrigido: Captura do switch do formulário
+            IsFeatured = model.IsFeatured,   // 🛠️ Corrigido: Captura do switch do formulário
+            StockQuantity = model.StockQuantity
         };
 
         await _productService.AddAsync(productDto);
@@ -87,20 +88,19 @@ public class AdminController : Controller
             Description = product.Description,
             CoverImageUrl = product.Image,
             CategoryId = product.CategoryId,
-            IsFeatured = true,
-            StockQuantity = product.StockQuantity, // 👈 Carrega do banco
+            Price = product.Price,
+            IsFeatured = product.IsFeatured,   // 🛠️ Carrega estado real do banco
+            IsAvailable = product.IsAvailable, // 🛠️ Carrega estado real do banco
+            StockQuantity = product.StockQuantity,
             Categories = categories ?? new List<ProductCategoryDto>()
         };
-
-        ViewBag.CurrentPrice = product.Price;
-        ViewBag.CurrentAvailable = product.IsAvailable;
 
         return View(viewModel);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EditProduct(ProductFormViewModel model, decimal price, bool isAvailable)
+    public async Task<IActionResult> EditProduct(ProductFormViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -116,10 +116,10 @@ public class AdminController : Controller
             Description = model.Description,
             Image = model.CoverImageUrl,
             CategoryId = model.CategoryId,
-            Price = price,
-            IsAvailable = isAvailable,
-            IsFeatured = true,
-            StockQuantity = model.StockQuantity // 👈 Salva modificação
+            Price = model.Price,
+            IsAvailable = model.IsAvailable, // 🛠️ Corrigido: Salva estado alterado
+            IsFeatured = model.IsFeatured,   // 🛠️ Corrigido: Salva estado alterado
+            StockQuantity = model.StockQuantity
         };
 
         await _productService.UpdateAsync(productDto);
@@ -158,13 +158,6 @@ public class AdminController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // =====================================================================
-    // NOVOS MÉTODOS ADICIONADOS PARA AS CATEGORIAS NO DASHBOARD
-    // =====================================================================
-
-    /// <summary>
-    /// Lista todas as categorias cadastradas na View correspondente.
-    /// </summary>
     [HttpGet]
     public async Task<IActionResult> Categories()
     {
@@ -172,9 +165,6 @@ public class AdminController : Controller
         return View(categories);
     }
 
-    /// <summary>
-    /// Remove uma categoria do sistema tratando erros de dependência de chaves.
-    /// </summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteCategory(int id)
@@ -186,7 +176,6 @@ public class AdminController : Controller
         }
         catch (Exception)
         {
-            // Impede a quebra caso a categoria tenha chaves vinculadas a produtos
             TempData["ErrorMessage"] = "Não é possível apagar esta categoria porque existem produtos associados a ela.";
         }
 

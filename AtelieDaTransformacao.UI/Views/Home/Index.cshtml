@@ -14,13 +14,13 @@
 <div class="container mb-5">
     <div class="d-flex justify-content-center flex-wrap gap-2 mb-5">
         <a href="@Url.Action("Index", "Home")"
-               class="px-4 py-2 text-decoration-none rounded-pill border fw-semibold small transition @(Model.SelectedCategoryId == null ? "bg-wood text-black border-dark" : "bg-white text-secondary border-light-subtle")">
+               class="px-4 py-2 text-decoration-none rounded-pill fw-semibold small filter-pill @(Model.SelectedCategoryId == null ? "active" : "")">
             Ver Toda a Coleção
         </a>
         @foreach (var cat in Model.Categories)
         {
             <a href="@Url.Action("Index", "Home", new { categoryId = cat.Id })"
-                   class="px-4 py-2 text-decoration-none rounded-pill border fw-semibold small transition @(Model.SelectedCategoryId == cat.Id ? "bg-wood text-black border-dark" : "bg-white text-secondary border-light-subtle")">
+                   class="px-4 py-2 text-decoration-none rounded-pill fw-semibold small filter-pill @(Model.SelectedCategoryId == cat.Id ? "active" : "")">
                 @cat.Name
             </a>
         }
@@ -30,15 +30,15 @@
         @foreach (var prod in Model.Products)
         {
             <div class="col">
-                <div class="card h-100 card-wood shadow-sm position-relative overflow-hidden">
+                <div class="card h-100 card-wood position-relative overflow-hidden">
                     @if (prod.IsFeatured)
                     {
-                        <span class="position-absolute top-0 start-0 m-3 badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold shadow-sm" style="z-index: 2;">
+                        <span class="position-absolute top-0 start-0 m-3 badge px-3 py-2 rounded-pill fw-bold shadow-sm" style="z-index: 2; background-color: var(--artisan-gold); color: var(--artisan-wood);">
                             <i class="bi bi-stars me-1"></i> Destaque
                         </span>
                     }
                     
-                    <div style="height: 280px; overflow:hidden;" class="bg-light">
+                    <div class="image-container" style="height: 280px;">
                         <img src="@(string.IsNullOrEmpty(prod.Image) ? "/images/placeholder.jpg" : prod.Image)"
                              class="w-100 h-100 object-fit-cover transition-transform" alt="@prod.Title" />
                     </div>
@@ -60,7 +60,7 @@
                                 </a>
                                 @if (prod.IsAvailable)
                                 {
-                                    <a href="@prod.WhatsAppLink" target="_blank" class="btn btn-success rounded-pill px-4 fw-medium d-inline-flex align-items-center gap-2 small shadow-sm">
+                                    <a href="@prod.WhatsAppLink" target="_blank" class="btn btn-success rounded-pill px-4 fw-medium d-inline-flex align-items-center gap-2 small shadow-sm" style="background-color: #25d366; border: none;">
                                         <i class="bi bi-whatsapp"></i> Negociar
                                     </a>
                                 }

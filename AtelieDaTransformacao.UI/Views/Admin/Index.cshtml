@@ -86,7 +86,11 @@
                                 <span class="badge bg-warning text-dark rounded-pill" style="font-size: 0.65rem;">Destaque</span>
                             }
                         </td>
-                        <td><span class="text-secondary small">@prod.CategoryName</span></td>
+                        <td>
+                            <span class="text-secondary small">
+                                @(string.IsNullOrEmpty(prod.CategoryName) ? "Mobiliário" : prod.CategoryName)
+                            </span>
+                        </td>
                         <td class="fw-semibold text-dark">@prod.Price.ToString("C")</td>
                         <td>
                             <span class="badge rounded-pill px-3 py-1 @(prod.IsAvailable ? "bg-success bg-opacity-10 text-success" : "bg-secondary bg-opacity-10 text-secondary")">

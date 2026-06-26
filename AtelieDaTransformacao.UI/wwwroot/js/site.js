@@ -1,12 +1,16 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
     // Adiciona feedback visual imediato nos inputs ativos
     const inputs = document.querySelectorAll(".form-control, .form-select");
+
     inputs.forEach(input => {
         input.addEventListener("focus", () => {
-            input.parentElement.classList.add("shadow-sm");
+            // Aplica a classe de controle diretamente no próprio input
+            input.classList.add("form-active");
         });
+
         input.addEventListener("blur", () => {
-            input.parentElement.classList.remove("shadow-sm");
+            // Remove o efeito ao sair do campo
+            input.classList.remove("form-active");
         });
     });
 });

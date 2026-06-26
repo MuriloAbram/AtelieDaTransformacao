@@ -105,6 +105,7 @@ body {
         box-shadow: 0 20px 32px rgba(61, 43, 31, 0.08) !important;
     }
 
+/* Correção e Animação do container da imagem */
 .image-container {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
@@ -113,10 +114,28 @@ body {
     background-color: var(--artisan-linen);
 }
 
+    .image-container img {
+        transition: transform 0.5s ease;
+    }
+
+/* Zoom elegante da foto ao passar o mouse sobre o card inteiro */
+.card-wood:hover .image-container img {
+    transform: scale(1.06);
+}
+
 /* Inputs de Formulários Administrativos e Autenticação */
-.form-floating > .form-control:focus {
-    border-color: var(--artisan-clay);
-    box-shadow: 0 0 0 0.25rem rgba(184, 93, 67, 0.15);
+.form-floating > .form-control:focus,
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--artisan-clay) !important;
+    box-shadow: 0 0 0 0.25rem rgba(184, 93, 67, 0.25) !important;
+}
+
+.form-control.form-active,
+.form-select.form-active {
+    border-color: var(--artisan-gold) !important;
+    box-shadow: 0 4px 12px rgba(207, 158, 83, 0.2) !important;
+    transition: all 0.2s ease-in-out;
 }
 
 /* Botão Flutuante do WhatsApp */

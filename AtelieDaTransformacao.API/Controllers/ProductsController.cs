@@ -9,7 +9,7 @@ namespace AtelieDaTransformacao.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductsController : ControllerBase // Alterado para ControllerBase (ideal para APIs puras)
+    public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
 
@@ -18,9 +18,6 @@ namespace AtelieDaTransformacao.API.Controllers
             _productService = productService;
         }
 
-        /// <summary>
-        /// Retorna todos os produtos cadastrados.
-        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
         {
@@ -28,10 +25,7 @@ namespace AtelieDaTransformacao.API.Controllers
             return Ok(products);
         }
 
-        /// <summary>
-        /// Retorna um produto por ID.
-        /// </summary>
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetProductById")]
         public async Task<ActionResult<ProductDto>> GetById(int id)
         {
             var product = await _productService.GetByIdAsync(id);
@@ -44,9 +38,6 @@ namespace AtelieDaTransformacao.API.Controllers
             return Ok(product);
         }
 
-        /// <summary>
-        /// Cadastra um novo produto (Apenas Administradores).
-        /// </summary>
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ProductDto>> Create([FromBody] CreateProductDto dto)
@@ -63,17 +54,16 @@ namespace AtelieDaTransformacao.API.Controllers
                 Price = dto.Price,
                 Image = dto.Image,
                 CategoryId = dto.CategoryId,
-                IsFeatured = true,
+                IsFeatured = true, // Define como destaque por padrão
                 IsAvailable = true
             };
 
-            // Apenas aguarda a execução do método, sem tentar atribuir o retorno à uma variável
+            // Certifique-se de que o seu AddAsync modifique o productDto inserindo o ID gerado pelo banco,
+            // ou altere a assinatura do seu serviço para retornar o DTO persistido e populado:
+            // productDto = await _productService.AddAsync(productDto);
             await _productService.AddAsync(productDto);
 
-            // Retornamos o próprio 'productDto' preenchido. 
-            // Nota: Se o seu banco gera o Id automaticamente, o Id aqui irá como 0. 
-            // Se o Id for crucial no retorno da API, prefira a Opção 2 abaixo.
-            return CreatedAtAction(nameof(GetById), new { id = productDto.Id }, productDto);
+            return CreatedAtRoute("GetProductById", new { id = productDto.Id }, productDto);
         }
     }
 }
