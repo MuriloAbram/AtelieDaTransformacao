@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100" style="--artisan-gold: #dfb76c; --artisan-clay: #b85a3a; --artisan-wood: #1a1512;">
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-artisan-dark navbar-artisan py-3 shadow-sm sticky-top">
             <div class="container">
@@ -70,43 +70,49 @@
                 <button type="button" data-bs-target="#artisanHeroCarousel" data-bs-slide-to="1"></button>
                 <button type="button" data-bs-target="#artisanHeroCarousel" data-bs-slide-to="2"></button>
             </div>
-            <div class="carousel-inner" style="max-height: 500px; background-color: var(--artisan-wood);">
+            <div class="carousel-inner" style="max-height: 550px; background-color: var(--artisan-wood);">
+                
                 <div class="carousel-item active" data-bs-interval="6000">
-                    <div class="position-relative w-100" style="height: 500px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1533090161767-e6ffed986c88?q=80&w=1600') center/cover no-repeat;">
-                        <div class="carousel-caption h-100 d-flex flex-column justify-content-center align-items-start text-start px-md-5" style="max-width: 700px; bottom: 0;">
-                            <span class="badge text-dark text-uppercase mb-2 px-3 py-2 rounded-pill fw-bold" style="background-color: var(--artisan-gold) !important;">Design Exclusivo</span>
+                    <div class="position-relative w-100" style="height: 550px; background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.75)), url('https://images.unsplash.com/photo-1610701596007-11502861afab?q=80&w=1600') center/cover no-repeat;">
+                        <div class="carousel-caption h-100 d-flex flex-column justify-content-center align-items-start text-start px-md-5" style="max-width: 750px; bottom: 0;">
+                            <span class="badge text-dark text-uppercase mb-3 px-3 py-2 rounded-pill fw-bold" style="background-color: var(--artisan-gold, #dfb76c) !important;">Design Exclusivo</span>
                             <h1 class="display-4 fw-bold text-white serif-title mb-3">Mobiliário Orgânico & Resina Fluida</h1>
-                            <p class="lead text-white-50 mb-4">Peças únicas esculpidas a partir de troncos de descarte e resina de alta resistência. Arte viva para transformar o seu espaço.</p>
-                            <a href="#galeria-ancora" class="btn btn-outline-artisan px-4 py-2 rounded-pill fw-semibold">Explorar Coleção</a>
+                            <p class="lead text-white-50 mb-4">Peças únicas esculpidas a partir de troncos de descarte e resina de alta resistência. Arte viva para transformar o seu espaço com requinte.</p>
+                            <a href="#galeria-ancora" class="btn btn-outline-light border-2 px-4 py-2 rounded-pill fw-semibold">Explorar Coleção</a>
                         </div>
                     </div>
                 </div>
+                
                 <div class="carousel-item" data-bs-interval="6000">
-                    <div class="position-relative w-100" style="height: 500px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1600') center/cover no-repeat;">
-                        <div class="carousel-caption h-100 d-flex flex-column justify-content-center align-items-start text-start px-md-5" style="max-width: 700px; bottom: 0;">
-                            <span class="badge text-white text-uppercase mb-2 px-3 py-2 rounded-pill fw-bold" style="background-color: var(--artisan-clay) !important;">Sustentabilidade</span>
+                    <div class="position-relative w-100" style="height: 550px; background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.75)), url('https://images.unsplash.com/photo-1455792244726-6d13a5a5130f?q=80&w=1600') center/cover no-repeat;">
+                        <div class="carousel-caption h-100 d-flex flex-column justify-content-center align-items-start text-start px-md-5" style="max-width: 750px; bottom: 0;">
+                            <span class="badge text-white text-uppercase mb-3 px-3 py-2 rounded-pill fw-bold" style="background-color: var(--artisan-clay, #b85a3a) !important;">Sustentabilidade</span>
                             <h1 class="display-4 fw-bold text-white serif-title mb-3">Autenticidade Esculpida à Mão</h1>
-                            <p class="lead text-white-50 mb-4">Respeitamos os veios originais da madeira, garantindo que cada tábua gourmet, mesa ou painel possua uma identidade irreplicável.</p>
-                            <a href="#galeria-ancora" class="btn btn-outline-artisan px-4 py-2 rounded-pill fw-semibold">Ver Peças Prontas</a>
+                            <p class="lead text-white-50 mb-4">Respeitamos a história e a curvatura original da madeira rústica, garantindo que cada peça gourmet, mesa ou bancada traga uma identidade irreplicável.</p>
+                            <a href="#galeria-ancora" class="btn btn-outline-light border-2 px-4 py-2 rounded-pill fw-semibold">Ver Peças Prontas</a>
                         </div>
                     </div>
                 </div>
+                
                 <div class="carousel-item" data-bs-interval="6000">
-                    <div class="position-relative w-100" style="height: 500px; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1581428982868-e410dd047a90?q=80&w=1600') center/cover no-repeat;">
-                        <div class="carousel-caption h-100 d-flex flex-column justify-content-center align-items-start text-start px-md-5" style="max-width: 700px; bottom: 0;">
-                            <span class="badge text-uppercase mb-2 px-3 py-2 rounded-pill fw-bold" style="background-color: var(--artisan-gold) !important; color: var(--artisan-wood)">Projetos sob Medida</span>
+                    <div class="position-relative w-100" style="height: 550px; background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.75)), url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?q=80&w=1600') center/cover no-repeat;">
+                        <div class="carousel-caption h-100 d-flex flex-column justify-content-center align-items-start text-start px-md-5" style="max-width: 750px; bottom: 0;">
+                            <span class="badge text-uppercase mb-3 px-3 py-2 rounded-pill fw-bold" style="background-color: var(--artisan-gold, #dfb76c) !important; color: var(--artisan-wood, #1a1512)">Projetos sob Medida</span>
                             <h1 class="display-4 fw-bold text-white serif-title mb-3">Direto para o seu WhatsApp</h1>
-                            <p class="lead text-white-50 mb-4">Escolha a obra na nossa vitrine digital e entre em contato direto com o artesão para acertar a entrega ou customizar dimensões.</p>
-                            <a href="https://wa.me/seu_numero" target="_blank" class="btn btn-success px-4 py-2 rounded-pill fw-semibold border-0" style="background-color: #25d366;"><i class="bi bi-whatsapp me-2"></i>Encomendar Agora</a>
+                            <p class="lead text-white-50 mb-4">Escolha o modelo ideal em nossa vitrine digital e entre em contato direto com o mestre artesão para alinhar dimensões e detalhes de entrega.</p>
+                            <a href="https://wa.me/seu_numero" target="_blank" class="btn btn-success px-4 py-2 rounded-pill fw-semibold border-0 shadow" style="background-color: #25d366;"><i class="bi bi-whatsapp me-2"></i>Encomendar Agora</a>
                         </div>
                     </div>
                 </div>
+
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#artisanHeroCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#artisanHeroCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Seguinte</span>
             </button>
         </div>
         <div id="galeria-ancora"></div>
@@ -151,7 +157,7 @@
                 Mobiliário Orgânico de Luxo, Arte Rústica Funcional e Design Customizado sob Medida.
             </p>
             <div class="border-top border-secondary border-opacity-10 pt-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-                <small class="small opacity-75">&copy; @System.DateTime.Now.Year — Autenticidade esculpida à mão. Todos os direitos reservados.</small>
+                <small class="small opacity-75">&copy; @System.DateTime.Now.Year T1B-3 Digital Studio. Todos os direitos reservados. | Desenvolvido com 💙 pela T1B-3.</small>
                 <div class="d-flex gap-3 small">
                     <a href="#" class="text-white-50 text-decoration-none opacity-75">Termos de Uso</a>
                     <span class="text-secondary opacity-25">|</span>
