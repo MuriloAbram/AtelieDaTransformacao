@@ -48,6 +48,21 @@ body {
         transform: translateY(-1px);
     }
 
+/* ADICIONADO: Estilos para o Menu de Categorias Mobile */
+.bg-artisan-mobile-menu {
+    background-color: rgba(42, 36, 33, 0.98);
+    border: 1px solid rgba(207, 158, 83, 0.2);
+}
+
+.mobile-menu-item {
+    transition: background-color 0.2s ease;
+}
+
+    .mobile-menu-item:hover {
+        background-color: rgba(207, 158, 83, 0.15);
+        color: var(--artisan-gold) !important;
+    }
+
 /* Botões Estilizados */
 .btn-artisan {
     background-color: var(--artisan-clay);
@@ -162,3 +177,4 @@ body {
         transform: scale(1.1) translateY(-5px);
         box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
     }
+
