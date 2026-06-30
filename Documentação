@@ -1,0 +1,66 @@
+Ateliê da Transformação
+
+O Ateliê da Transformação é uma vitrine digital integrada a um painel administrativo, desenvolvida para gerenciar e expor produtos artesanais. A aplicação foi construída utilizando uma arquitetura em camadas com .NET 10, separando as responsabilidades de negócio, persistência, serviços REST e interface do usuário.
+Na parte pública, os clientes navegam pelo catálogo e filtram itens por categoria. Ao escolher um produto, o sistema gera automaticamente um link personalizado para o WhatsApp, permitindo o contato direto com a mensagem já preenchida com o nome e valor do item. No back-end, um painel administrativo seguro gerencia o estoque, produtos e categorias.
+
+Equipe de Desenvolvimento e Divisão do Projeto
+
+O projeto foi construído de forma colaborativa, dividindo as camadas e responsabilidades da seguinte forma:
+  Murilo: Responsável pelo coração do domínio da aplicação (Domain) e pela exposição dos serviços REST (API).
+  Renan: Responsável pelas regras de negócio, DTOs e serviços (Application), além do desenvolvimento das telas e da experiência visual do usuário (UI).
+  Igor: Responsável por toda a parte de persistência, acesso a dados, mapeamento e banco de dados (Infrastructure), além de dar suporte no acoplamento com a camada de UI.
+
+
+Tecnologias que usamos:
+| Tecnologia | Versão | Uso no Projeto |
+| --- | --- | --- |
+| .NET | 10.0 | Framework de desenvolvimento principal |
+| ASP.NET Core MVC | 10.0 | Desenvolvimento da interface web (Vitrine e Painel Admin) |
+| ASP.NET Core Web API | 10.0 | Camada de serviços REST (Endpoints do sistema) |
+| Entity Framework Core | 10.0.9 | ORM para mapeamento e persistência dos dados |
+| SQL Server LocalDB | — | Banco de dados relacional para ambiente de desenvolvimento |
+| ASP.NET Core Identity | 10.0.9 | Subsistema de autenticação, autorização e controle de papéis (Roles) |
+| Swashbuckle (Swagger) | 10.x | Documentação e testes interativos da API |
+| Bootstrap | 5.x | Framework CSS para estilização e responsividade |
+| jQuery / Validation | — | Manipulação do DOM e validações no lado do cliente (Client-side) |
+
+
+Responsabilidades detalhadas:
+  Domain (Murilo): Define os modelos fundamentais (Product, ProductCategory) e os contratos abstratos (IProductRepository, IProductCategoryRepository). É totalmente isolada e sem dependências externas.
+  Application (Renan): Orquestra o fluxo de dados através de serviços como ProductService, ProductCategoryService e WhatsAppService, mapeando entidades para DTOs e ViewModels.
+  Infrastructure (Igor): Implementa os contratos de dados usando o EF Core (AtelieDaTransformacaoDbContext), gerencia as configurações da Fluent API e executa o SeedData inicial.
+  API (Murilo): Disponibiliza os endpoints RESTful para consumo externo e integração com a interface, documentados pelo Swagger.
+  UI (Renan / Igor): Camada de apresentação em MVC, renderizando o e-commerce público e as rotas administrativas.
+
+
+Modelagem de Dados:
+
+1. Product (Produto)
+  Id (int): Chave primária.
+  Title (string): Nome comercial do produto.
+  Description (string): Detalhes técnicos ou artesanais do item.
+  Price (decimal): Valor de venda.
+  Image (string): Caminho físico ou URL da imagem do produto.
+  CategoryId (int): Chave estrangeira ligada à categoria.
+  IsFeatured (bool): Define se o produto aparece nos destaques da vitrine.
+  IsAvailable (bool): Status de disponibilidade para venda.
+  StockQuantity (int): Quantidade atual no estoque.
+  CreatedAt (DateTime): Registro de data e hora do cadastro.
+
+
+2. ProductCategory (Categoria)
+  Id (int): Chave primária.
+  Name (string): Nome da categoria (ex: Crochê, Madeira, Cerâmica).
+  Description (string): Descrição sobre o grupo de produtos.
+  Products (ICollection): Relacionamento de 1 para Muitos (1:N) com os produtos.
+
+
+Segurança e Autenticação
+
+O ecossistema utiliza o ASP.NET Core Identity para o gerenciamento de credenciais. O acesso ao Painel Admin (/Admin) e aos endpoints críticos de mutação de dados exige a Role Admin.
+
+Na primeira execução, o mecanismo de SeedData (configurado na Infraestrutura) cria automaticamente a conta administrativa baseada nas configurações do arquivo appsettings.json.
+
+Credenciais Padrão:
+  Usuário: admin@atelie.com
+  Senha: Admin@Atelie123
