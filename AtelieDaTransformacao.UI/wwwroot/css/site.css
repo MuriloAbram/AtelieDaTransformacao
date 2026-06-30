@@ -48,7 +48,7 @@ body {
         transform: translateY(-1px);
     }
 
-/* ADICIONADO: Estilos para o Menu de Categorias Mobile */
+/* Menu de Categorias Mobile */
 .bg-artisan-mobile-menu {
     background-color: rgba(42, 36, 33, 0.98);
     border: 1px solid rgba(207, 158, 83, 0.2);
@@ -178,3 +178,30 @@ body {
         box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
     }
 
+/* =============================================================================
+   SISTEMA ADMINISTRATIVO - MATANDO O BG-BLACK DO BOOTSTRAP
+   ============================================================================= */
+
+/* Força o container a ignorar a classe bg-black nativa */
+div.position-fixed.bottom-0.bg-black {
+    background-color: transparent !important;
+    background: transparent !important;
+}
+
+/* Ajusta o botão "Sair" para o padrão do Ateliê */
+div.position-fixed.bottom-0 a,
+div.position-fixed.bottom-0 button {
+    border: 1px solid var(--artisan-clay) !important;
+    color: var(--artisan-clay) !important;
+    background: transparent !important;
+    border-radius: 8px !important;
+    transition: all 0.25s ease !important;
+}
+
+    /* Efeito Hover do botão */
+    div.position-fixed.bottom-0 a:hover,
+    div.position-fixed.bottom-0 button:hover {
+        background-color: var(--artisan-clay) !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(184, 93, 67, 0.25);
+    }
