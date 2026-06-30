@@ -193,7 +193,7 @@ div.position-fixed.bottom-0 a,
 div.position-fixed.bottom-0 button {
     border: 1px solid var(--artisan-clay) !important;
     color: var(--artisan-clay) !important;
-    background: transparent !important;
+    background: transparent !important; 
     border-radius: 8px !important;
     transition: all 0.25s ease !important;
 }
@@ -205,3 +205,73 @@ div.position-fixed.bottom-0 button {
         color: #ffffff !important;
         box-shadow: 0 4px 12px rgba(184, 93, 67, 0.25);
     }
+
+/* === Mobile: overrides para dashboard offcanvas (admin) — PRETO (forçado) === */
+@media (max-width: 767.98px) {
+    /* força o offcanvas inteiro preto */
+    #adminSidebarMobile,
+    #adminSidebarMobile.offcanvas {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+    }
+
+        /* header e body (overrides do style inline) */
+        #adminSidebarMobile .offcanvas-header,
+        #adminSidebarMobile .offcanvas-body {
+            background-color: transparent !important;
+            color: #ffffff !important;
+        }
+
+        /* título */
+        #adminSidebarMobile .offcanvas-title {
+            color: #ffffff !important;
+            font-weight: 700;
+        }
+
+        /* forçar o X visível (SVG do .btn-close) */
+        #adminSidebarMobile .btn-close {
+            filter: invert(1) grayscale(1) brightness(2) !important;
+            opacity: 0.95 !important;
+        }
+
+        /* links */
+        #adminSidebarMobile .nav-link {
+            color: rgba(255,255,255,0.92) !important;
+            padding: 12px 0;
+            font-weight: 500;
+        }
+
+            #adminSidebarMobile .nav-link i {
+                color: var(--artisan-gold) !important;
+            }
+
+            #adminSidebarMobile .nav-link:hover,
+            #adminSidebarMobile .nav-link.active {
+                background-color: rgba(255,255,255,0.04) !important;
+                color: var(--artisan-gold) !important;
+            }
+
+        /* botão sair dentro do offcanvas */
+        #adminSidebarMobile form .btn-outline-danger {
+            border-color: rgba(255,255,255,0.12) !important;
+            color: #ffffff !important;
+            background: transparent !important;
+        }
+
+            #adminSidebarMobile form .btn-outline-danger:hover {
+                background-color: rgba(255,255,255,0.12) !important;
+                color: #ffffff !important;
+                border-color: rgba(255,255,255,0.12) !important;
+            }
+
+    /* backdrop */
+    .offcanvas-backdrop {
+        background-color: rgba(0,0,0,0.6) !important;
+    }
+
+    /* z-index */
+    .offcanvas-backdrop,
+    #adminSidebarMobile.offcanvas {
+        z-index: 1050 !important;
+    }
+}
