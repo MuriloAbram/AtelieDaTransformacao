@@ -225,6 +225,23 @@
                     }
                 });
             }
+
+            // --- Adicionado: garantir que o botão 'X' feche o offcanvas sem remover nada ---
+            if (offcanvasEl) {
+                const closeBtn = offcanvasEl.querySelector('[data-bs-dismiss="offcanvas"]');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', function (e) {
+                        // Usa API do Bootstrap se disponível, senão fallback que remove a classe 'show'
+                        if (window.bootstrap && typeof window.bootstrap.Offcanvas === 'function') {
+                            const instance = bootstrap.Offcanvas.getOrCreateInstance(offcanvasEl);
+                            instance.hide();
+                        } else {
+                            offcanvasEl.classList.remove('show');
+                        }
+                    });
+                }
+            }
+            // --- fim da adição ---
         });
     </script>
 
