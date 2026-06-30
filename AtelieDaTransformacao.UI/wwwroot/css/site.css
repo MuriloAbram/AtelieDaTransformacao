@@ -208,65 +208,69 @@ div.position-fixed.bottom-0 button {
 
 /* === Mobile: overrides para dashboard offcanvas (admin) — PRETO (forçado) === */
 @media (max-width: 767.98px) {
-    /* força o offcanvas inteiro preto */
+    /* offcanvas: branco com texto preto (mesma aparência do sidebar desktop) */
     #adminSidebarMobile,
-    #adminSidebarMobile.offcanvas {
-        background-color: #000000 !important;
-        color: #ffffff !important;
+    #adminSidebarMobile.offcanvas,
+    #adminSidebarMobile .offcanvas-body {
+        background-color: #ffffff !important;
+        color: var(--text-main) !important;
     }
 
-        /* header e body (overrides do style inline) */
-        #adminSidebarMobile .offcanvas-header,
-        #adminSidebarMobile .offcanvas-body {
-            background-color: transparent !important;
-            color: #ffffff !important;
-        }
+    /* header / título */
+    #adminSidebarMobile .offcanvas-header {
+        border-bottom-color: #e5e7eb !important;
+        background: transparent !important;
+    }
 
-        /* título */
-        #adminSidebarMobile .offcanvas-title {
-            color: #ffffff !important;
-            font-weight: 700;
-        }
+    #adminSidebarMobile .offcanvas-title {
+        color: var(--text-main) !important;
+        font-weight: 700 !important;
+    }
 
-        /* forçar o X visível (SVG do .btn-close) */
-        #adminSidebarMobile .btn-close {
-            filter: invert(1) grayscale(1) brightness(2) !important;
-            opacity: 0.95 !important;
-        }
+    /* botão fechar (X) em tom escuro */
+    #adminSidebarMobile .btn-close {
+        filter: none !important;
+        opacity: 0.9 !important;
+    }
 
-        /* links */
-        #adminSidebarMobile .nav-link {
-            color: rgba(255,255,255,0.92) !important;
-            padding: 12px 0;
-            font-weight: 500;
-        }
+    /* links igual ao sidebar desktop */
+    #adminSidebarMobile .nav-link {
+        color: #666 !important;
+        padding: 12px 0 !important;
+        font-weight: 500 !important;
+        display: flex;
+        align-items: center;
+    }
 
-            #adminSidebarMobile .nav-link i {
-                color: var(--artisan-gold) !important;
-            }
+    /* ícones com destaque da paleta */
+    #adminSidebarMobile .nav-link i {
+        color: var(--artisan-clay) !important;
+        margin-right: 10px;
+        font-size: 1.05rem;
+    }
 
-            #adminSidebarMobile .nav-link:hover,
-            #adminSidebarMobile .nav-link.active {
-                background-color: rgba(255,255,255,0.04) !important;
-                color: var(--artisan-gold) !important;
-            }
+    /* hover / active igual ao desktop */
+    #adminSidebarMobile .nav-link:hover,
+    #adminSidebarMobile .nav-link.active {
+        background-color: rgba(184,93,67,0.1) !important;
+        color: var(--artisan-clay) !important;
+    }
 
-        /* botão sair dentro do offcanvas */
-        #adminSidebarMobile form .btn-outline-danger {
-            border-color: rgba(255,255,255,0.12) !important;
-            color: #ffffff !important;
-            background: transparent !important;
-        }
+    /* botão Sair igual ao desktop */
+    #adminSidebarMobile form .btn-outline-danger {
+        border-color: var(--artisan-clay) !important;
+        color: var(--artisan-clay) !important;
+        background: transparent !important;
+    }
 
-            #adminSidebarMobile form .btn-outline-danger:hover {
-                background-color: rgba(255,255,255,0.12) !important;
-                color: #ffffff !important;
-                border-color: rgba(255,255,255,0.12) !important;
-            }
+    #adminSidebarMobile form .btn-outline-danger:hover {
+        background-color: var(--artisan-clay) !important;
+        color: #fff !important;
+    }
 
-    /* backdrop */
+    /* backdrop menos agressivo */
     .offcanvas-backdrop {
-        background-color: rgba(0,0,0,0.6) !important;
+        background-color: rgba(0,0,0,0.25) !important;
     }
 
     /* z-index */
