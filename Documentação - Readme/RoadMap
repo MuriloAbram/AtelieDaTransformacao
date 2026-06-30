@@ -33,6 +33,43 @@ Responsabilidades detalhadas:
   UI (Renan / Igor): Camada de apresentação em MVC, renderizando o e-commerce público e as rotas administrativas.
 
 
+Como Executar o Projeto
+  Pré-requisitos
+    .NET 10 SDK instalado
+    SQL Server LocalDB ativo
+
+  Passos para a execução:
+
+    1. Restaurar as Dependências:
+    Na raiz do projeto, execute:
+    ```bash
+    dotnet restore
+    ```
+
+    2. **Atualizar o Banco de Dados (Migrations):
+    Execute o comando apontando a camada de persistência e a inicialização da API:
+    ```bash
+    dotnet ef database update --project AtelieDaTransformacao.Infrastructure --startup-project AtelieDaTransformacao.API
+    ```
+
+
+    3. Subir os Serviços:
+    Abra dois terminais para rodar os projetos de forma independente:
+    Para a API:
+    ```bash
+    dotnet run --project AtelieDaTransformacao.API
+    ```
+
+Acesse o Swagger em: `https://localhost:PORTA/swagger`
+Para a interface Web:
+```bash
+dotnet run --project AtelieDaTransformacao.UI
+```
+
+Vitrine: https://localhost:PORTA
+Painel Administrativo: https://localhost:PORTA/Admin
+
+
 Modelagem de Dados:
 
 1. Product (Produto)
