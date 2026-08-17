@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="AtelieDaTransformacacao.Application/AtelieDaTransformacao.Application.csproj" />
   <Project Path="AtelieDaTransformacao.API/AtelieDaTransformacao.API.csproj" />
+  <Project Path="AtelieDaTransformacao.Desktop/AtelieDaTransformacao.Desktop.csproj" Id="91c4712f-fdbe-45cf-b041-2453d0dc7d90" />
   <Project Path="AtelieDaTransformacao.Domain/AtelieDaTransformacao.Domain.csproj" />
   <Project Path="AtelieDaTransformacao.Infrastructure/AtelieDaTransformacao.Infrastructure.csproj" />
   <Project Path="AtelieDaTransformacao.UI/AtelieDaTransformacao.UI.csproj" />
