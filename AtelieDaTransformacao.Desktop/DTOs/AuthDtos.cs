@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace AtelieDaTransformacao.Desktop.DTOs
 {
-    internal class AuthDtos
+
+    /// <summary>
+    /// Estrutura de dados para credenciais de autenticação e registro de utilizadores.
+    /// </summary>
+    public class LoginRequestDto
     {
     }
 }
