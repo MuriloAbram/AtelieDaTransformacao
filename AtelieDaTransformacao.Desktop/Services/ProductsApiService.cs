@@ -1,94 +1,84 @@
-﻿// =============================================================================
-// SenacGames.Desktop - Services/GamesApiService.cs
-// =============================================================================
-//  CONCEITO: Service de Games
-//
-// Realiza todas as operações CRUD de games via API REST:
-//   GET    /api/games         Listar todos os games
-//   GET    /api/games/{id}    Buscar game por ID
-//   POST   /api/games         Criar game (requer Admin)
-//   PUT    /api/games/{id}    Atualizar game (requer Admin)
-//   DELETE /api/games/{id}    Excluir game (requer Admin)
-//
-// IMPORTANTE: As operações de escrita (POST, PUT, DELETE) requerem
-// que o usuário esteja autenticado como Admin.
-// A autorização é verificada pela própria API, não pelo Desktop.
-// O Desktop não precisa verificar roles para fazer a chamada —
-// mas deve controlar a INTERFACE (exibir/ocultar botões) baseado no perfil.
-// =============================================================================
-
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AtelieDaTransformacao.Desktop.Helpers;
-using SenacGames.Desktop.DTOs;
-using SenacGames.Desktop.Helpers;
+using AtelieDaTransformacao.Application.DTOs;
 
-namespace SenacGames.Desktop.Services
+namespace AtelieDaTransformacao.Desktop.Services
 {
-    public class GamesApiService
+    // =============================================================================
+    // AtelieDaTransformacao.Desktop - Services/ProductsApiService.cs
+    // =============================================================================
+    // CONCEITO: Service de Products
+    //
+    // Realiza todas as operações CRUD de produtos via API REST:
+    //   GET    /api/products         Listar todos os produtos
+    //   GET    /api/products/{id}    Buscar produto por ID
+    //   POST   /api/products         Criar produto (requer Admin)
+    //   PUT    /api/products/{id}    Atualizar produto (requer Admin)
+    //   DELETE /api/products/{id}    Excluir produto (requer Admin)
+    //
+    // IMPORTANTE: A autorização é verificada pela API; o Desktop apenas
+    // executa as chamadas e controla a interface.
+    // =============================================================================
+
+    public class ProductsApiService
     {
         private readonly HttpClientHelper _http;
 
-        //Construtor - Inicializa junto com o código quando o mesmo é chamado.
-        public GamesApiService()
+        public ProductsApiService()
         {
             _http = HttpClientHelper.Instance;
         }
 
-        ///<summary>
-        /// Lista todas os ganes via GET /api/games
+        /// <summary>
+        /// Lista todos os produtos via GET /api/products
         /// </summary>
-        public async Task<List<GameResponseDto>> GetAllAsync()
+        public async Task<List<ProductDto>> GetAllAsync()
         {
             try
             {
-                var games = await _http.GetAsync<List<GameResponseDto>>("/api/games");
-                return games ?? new List<GameResponseDto>();
+                var products = await _http.GetAsync<List<ProductDto>>("/api/products");
+                return products ?? new List<ProductDto>();
             }
             catch
             {
-                return new List<GameResponseDto>();
+                return new List<ProductDto>();
             }
         }
 
         /// <summary>
-        /// Busca um game específico por ID via GET /api/games/{id} 
+        /// Busca um produto específico por ID via GET /api/products/{id}
         /// </summary>
-        public async Task<GameResponseDto> GetByIdAsync(int id)
+        public async Task<ProductDto?> GetByIdAsync(int id)
         {
-            return await _http.GetAsync<GameResponseDto>($"/api/games/{id}");
+            return await _http.GetAsync<ProductDto>($"/api/products/{id}");
         }
 
         /// <summary>
-        /// Cria um novo game via POST /api/games.
-        /// Requer perfil Admin (verificado pela API).
+        /// Cria um novo produto via POST /api/products.
         /// </summary>
-        /// <param name="dto">Dados do game a ser criado</param>
-        /// <returns>Game criado ou null em caso de erro</returns>
-        public async Task<(bool Success, GameResponseDto? Game, string ErrorMessage)>
-            CreateAsync(CreateGameDto dto)
+        public async Task<(bool Success, ProductDto? Product, string ErrorMessage)> CreateAsync(CreateProductDto dto)
         {
-            return await _http.PostAsync<GameResponseDto>("/api/games", dto);
+            var result = await _http.PostAsync<ProductDto>("/api/products", dto);
+            return (result.Success, result.Data, result.ErrorMessage);
         }
 
         /// <summary>
-        /// Atualiza um game existente via PUT /api/games/{id}.
-        /// Requer perfil Admin (verificado pela API).
+        /// Atualiza um produto existente via PUT /api/products/{id}.
         /// </summary>
-        public async Task<(bool Success, GameResponseDto? Game, string ErrorMessage)>
-            UpdateAsync(int id, UpdateGameDto dto)
+        public async Task<(bool Success, ProductDto? Product, string ErrorMessage)> UpdateAsync(int id, UpdateProductDto dto)
         {
-            return await _http.PutAsync<GameResponseDto>($"/api/games/{id}", dto);
+            var result = await _http.PutAsync<ProductDto>($"/api/products/{id}", dto);
+            return (result.Success, result.Data, result.ErrorMessage);
         }
 
         /// <summary>
-        /// Exclui um game via DELETE /api/games/{id}.
-        /// Requer perfil Admin (verificado pela API).
+        /// Exclui um produto via DELETE /api/products/{id}.
         /// </summary>
         public async Task<(bool Success, string ErrorMessage)> DeleteAsync(int id)
         {
-            return await _http.DeleteAsync($"/api/games/{id}");
+            return await _http.DeleteAsync($"/api/products/{id}");
         }
     }
-
-
-
 }

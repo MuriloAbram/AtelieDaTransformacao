@@ -5,13 +5,15 @@ namespace AtelieDaTransformacao.Desktop
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
-        [STAThread]
+        [System.STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+            // Inicialização compatível com todas as versões de WinForms
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+
+            // Evita ambiguidade com namespace 'Application' de outros projetos
+            System.Windows.Forms.Application.Run(new Form1());
         }
     }
 }

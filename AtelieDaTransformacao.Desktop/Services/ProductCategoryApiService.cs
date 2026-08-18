@@ -1,81 +1,72 @@
-﻿// =============================================================================
-// SenacGames.Desktop - Services/CategoriasApiService.cs
-// =============================================================================
-//  CONCEITO: Service de Categorias
-//
-// Realiza operações CRUD de categorias via API REST:
-//   GET    /api/categories         Listar todas as categorias
-//   POST   /api/categories         Criar categoria (requer Admin)
-//   PUT    /api/categories/{id}    Atualizar categoria (requer Admin)
-//   DELETE /api/categories/{id}    Excluir categoria (requer Admin)
-//
-// Observe que NÃO existe GET /api/categories/{id} — a API atual
-// não implementa busca por ID, apenas listagem completa.
-// =============================================================================
-
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AtelieDaTransformacao.Desktop.Helpers;
-using SenacGames.Desktop.DTOs;
-using SenacGames.Desktop.Helpers;
+using AtelieDaTransformacao.Application.DTOs;
 
-namespace SenacGames.Desktop.Services
+namespace AtelieDaTransformacao.Desktop.Services
 {
-    public class CategoriasApiService
+    // =============================================================================
+    // AtelieDaTransformacao.Desktop - Services/ProductCategoryApiService.cs
+    // =============================================================================
+    // CONCEITO: Service de Categorias (Product Categories)
+    //
+    // Realiza operações CRUD de categorias via API REST:
+    //   GET    /api/categories         Listar todas as categorias
+    //   POST   /api/categories         Criar categoria (requer Admin)
+    //   PUT    /api/categories/{id}    Atualizar categoria (requer Admin)
+    //   DELETE /api/categories/{id}    Excluir categoria (requer Admin)
+    // =============================================================================
+
+    public class ProductCategoryApiService
     {
         private readonly HttpClientHelper _http;
 
-        public CategoriasApiService()
+        public ProductCategoryApiService()
         {
             _http = HttpClientHelper.Instance;
         }
 
-        ///<summary>
+        /// <summary>
         /// Lista todas as categorias via GET /api/categories
         /// </summary>
-        public async Task<List<CategoriaResponseDto>> GetAllAsync()
+        public async Task<List<ProductCategoryDto>> GetAllAsync()
         {
             try
             {
-                var categorias = await _http.GetAsync<List<CategoriaResponseDto>>("/api/categories");
-                return categorias ?? new List<CategoriaResponseDto>();
+                var categories = await _http.GetAsync<List<ProductCategoryDto>>("/api/categories");
+                return categories ?? new List<ProductCategoryDto>();
             }
             catch
             {
-                return new List<CategoriaResponseDto>();
+                return new List<ProductCategoryDto>();
             }
         }
 
         /// <summary>
         /// Cria uma categoria via POST /api/categories
-        /// Requer perfil Admin
         /// </summary>
-        public async Task<(bool Success, CategoriaResponseDto? Categoria, string ErrorMessage)>
-            CreateAsync(CreateCategoriaDto dto)
+        public async Task<(bool Success, ProductCategoryDto? Category, string ErrorMessage)> CreateAsync(CreateProductCategoryDto dto)
         {
-            return await _http.PostAsync<CategoriaResponseDto>("/api/categories", dto);
+            var result = await _http.PostAsync<ProductCategoryDto>("/api/categories", dto);
+            return (result.Success, result.Data, result.ErrorMessage);
         }
 
-        ///<summary>
-        ///Atualiza uma categoria via PUT /api/categories/{id}
-        ///Requer pefil Admin
+        /// <summary>
+        /// Atualiza uma categoria via PUT /api/categories/{id}
         /// </summary>
-        public async Task<(bool Success, CategoriaResponseDto? Categoria, string ErrorMessage)>
-           UpdateAsync(int id, UpdateCategoriaDto dto)
+        public async Task<(bool Success, ProductCategoryDto? Category, string ErrorMessage)> UpdateAsync(int id, UpdateProductCategoryDto dto)
         {
-            return await _http.PutAsync<CategoriaResponseDto>($"/api/categories/{id}", dto);
+            var result = await _http.PutAsync<ProductCategoryDto>($"/api/categories/{id}", dto);
+            return (result.Success, result.Data, result.ErrorMessage);
         }
 
-        ///<summary>
-        ///Exclui uma categoria via DELETE /api/categories/{id}
-        ///Requer pefil Admin
+        /// <summary>
+        /// Exclui uma categoria via DELETE /api/categories/{id}
         /// </summary>
-        public async Task<(bool Success, string ErrorMessage)>
-           DeleteAsync(int id)
+        public async Task<(bool Success, string ErrorMessage)> DeleteAsync(int id)
         {
             return await _http.DeleteAsync($"/api/categories/{id}");
         }
-
-
-
-
     }
 }
