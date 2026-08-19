@@ -32,23 +32,21 @@ namespace AtelieDaTransformacao.API.Controllers
         /// Adm cria categoria
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<ProductCategoryDto>> Create([FromBody] CreateProductCategoryDto dto)
+        public async Task<ActionResult<ProductCategoryDto>> Create(
+    [FromBody] CreateProductCategoryDto dto)
         {
             if (dto == null)
             {
                 return BadRequest("Os dados da categoria não podem ser nulos.");
             }
 
-            var categoryDto = new ProductCategoryDto
+            await _productCategoryService.AddAsync(dto);
+
+            return Ok(new ProductCategoryDto
             {
-                Name = dto.Name
-            };
-
-            await _productCategoryService.AddAsync(categoryDto);
-
-            return CreatedAtAction(nameof(GetAll), new { id = categoryDto.Id }, categoryDto);
+                Name = dto.Name,
+            });
         }
-
         /// <summary>
         /// Deleta uma categoria indesejada pelo ID
         /// </summary>

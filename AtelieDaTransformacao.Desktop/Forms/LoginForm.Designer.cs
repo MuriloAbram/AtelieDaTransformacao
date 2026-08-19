@@ -84,16 +84,6 @@ namespace AtelieDaTransformacao.Desktop.Forms
             pnlBrand.Size = new Size(320, 450);
             pnlBrand.TabIndex = 0;
             // 
-            // pictureBox1
-            // 
-            pictureBox1.Image = Properties.Settings.successful_african_american_employee_manages_financial_planning;
-            pictureBox1.Location = new Point(81, 70);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(159, 132);
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox1.TabIndex = 0;
-            pictureBox1.TabStop = false;
-            // 
             // lblAppName
             // 
             lblAppName.BackColor = Color.Transparent;

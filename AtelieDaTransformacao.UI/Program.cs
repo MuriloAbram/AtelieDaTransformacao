@@ -1,68 +1,63 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using AtelieDaTransformacao.Infrastructure.Context;
-using AtelieDaTransformacao.Domain.Interfaces;
-using AtelieDaTransformacao.Infrastructure.Repositories;
 using AtelieDaTransformacao.Application.Interfaces;
 using AtelieDaTransformacao.Application.Services;
+using AtelieDaTransformacao.Domain.Interfaces;
+using AtelieDaTransformacao.Infrastructure.Context;
+using AtelieDaTransformacao.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace AtelieDaTransformacao.UI;
 
-/// <summary>
-/// Configuração principal de inicialização da aplicação, registro de dependências e pipelines HTTP.
-/// </summary>
-public class Program
+public static class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Configuração do Banco de Dados SQL Server via EF Core
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-            ?? throw new System.InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            ?? throw new InvalidOperationException(
+                "Connection string 'DefaultConnection' not found.");
 
         builder.Services.AddDbContext<AtelieDaTransformacaoDbContext>(options =>
             options.UseSqlServer(connectionString));
 
-        // Configuração do ASP.NET Core Identity para Autenticação do Administrador
-        builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
-        {
-            options.Password.RequireDigit = false;
-            options.Password.RequiredLength = 6;
-            options.Password.RequireNonAlphanumeric = false;
-            options.Password.RequireUppercase = false;
-            options.Password.RequireLowercase = false;
-        })
-        .AddEntityFrameworkStores<AtelieDaTransformacaoDbContext>()
-        .AddDefaultTokenProviders();
+        builder.Services
+            .AddIdentity<IdentityUser, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+            })
+            .AddEntityFrameworkStores<AtelieDaTransformacaoDbContext>()
+            .AddDefaultTokenProviders();
 
-        // Configurações de cookies de Autenticação/Redirecionamento de páginas restritas
         builder.Services.ConfigureApplicationCookie(options =>
         {
             options.LoginPath = "/Account/Login";
             options.AccessDeniedPath = "/Account/AccessDenied";
         });
 
-        // Registro de Dependências por Escopo (Injeção de Dependência Manual)
-        // Infraestrutura -> Repositórios
+        // INJEÇÃO DE DEPENDÊNCIA
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
         builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
-
-        // Aplicação -> Serviços de Negócio
         builder.Services.AddScoped<IWhatsAppService, WhatsAppService>();
         builder.Services.AddScoped<IProductService, ProductService>();
         builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
 
-        // Adiciona suporte para Controllers com Views (Razor Engine)
         builder.Services.AddControllersWithViews();
 
         var app = builder.Build();
 
-        // Pipeline de requisições HTTP (Middleware)
+        await using (var scope = app.Services.CreateAsyncScope())
+        {
+            var db = scope.ServiceProvider
+                .GetRequiredService<AtelieDaTransformacaoDbContext>();
+
+            await db.Database.EnsureCreatedAsync();
+        }
+
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
@@ -70,18 +65,17 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-        app.UseStaticFiles(); // Ativa suporte para CSS, JavaScript e imagens na pasta wwwroot
+        app.UseStaticFiles();
 
         app.UseRouting();
 
-        app.UseAuthentication(); // Middleware de validação de identidade (Quem é o utilizador)
-        app.UseAuthorization();  // Middleware de validação de permissões (O que ele pode fazer)
+        app.UseAuthentication();
+        app.UseAuthorization();
 
-        // Configuração de rotas padrão do MVC
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
 
-        app.Run();
+        await app.RunAsync();
     }
 }

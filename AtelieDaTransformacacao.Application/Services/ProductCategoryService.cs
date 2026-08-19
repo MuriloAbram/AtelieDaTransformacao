@@ -12,7 +12,8 @@ namespace AtelieDaTransformacao.Application.Services
     {
         private readonly IProductCategoryRepository _categoryRepository;
 
-        public ProductCategoryService(IProductCategoryRepository categoryRepository)
+        public ProductCategoryService(
+            IProductCategoryRepository categoryRepository)
         {
             _categoryRepository = categoryRepository;
         }
@@ -20,6 +21,7 @@ namespace AtelieDaTransformacao.Application.Services
         public async Task<IEnumerable<ProductCategoryDto>> GetAllAsync()
         {
             var categories = await _categoryRepository.GetAllAsync();
+
             var dtos = new List<ProductCategoryDto>();
 
             foreach (var item in categories)
@@ -31,13 +33,16 @@ namespace AtelieDaTransformacao.Application.Services
                     Description = item.Description
                 });
             }
+
             return dtos;
         }
 
         public async Task<ProductCategoryDto?> GetByIdAsync(int id)
         {
             var category = await _categoryRepository.GetByIdAsync(id);
-            if (category == null) return null;
+
+            if (category == null)
+                return null;
 
             return new ProductCategoryDto
             {
@@ -47,12 +52,11 @@ namespace AtelieDaTransformacao.Application.Services
             };
         }
 
-        public async Task AddAsync(ProductCategoryDto categoryDto)
+        public async Task AddAsync(CreateProductCategoryDto categoryDto)
         {
             var category = new ProductCategory
             {
                 Name = categoryDto.Name,
-                Description = categoryDto.Description
             };
 
             await _categoryRepository.AddAsync(category);
@@ -61,7 +65,9 @@ namespace AtelieDaTransformacao.Application.Services
         public async Task UpdateAsync(ProductCategoryDto categoryDto)
         {
             var category = await _categoryRepository.GetByIdAsync(categoryDto.Id);
-            if (category == null) throw new Exception("Category not found");
+
+            if (category == null)
+                throw new Exception("Categoria não encontrada.");
 
             category.Name = categoryDto.Name;
             category.Description = categoryDto.Description;
@@ -69,13 +75,16 @@ namespace AtelieDaTransformacao.Application.Services
             await _categoryRepository.UpdateAsync(category);
         }
 
-        /// <summary>
-        /// Remove uma categoria do banco de dados através do ID.
-        /// </summary>
-        public async Task DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            // O serviço repassa a instrução de exclusão diretamente para o repositório
+            var category = await _categoryRepository.GetByIdAsync(id);
+
+            if (category == null)
+                return false;
+
             await _categoryRepository.DeleteAsync(id);
+
+            return true;
         }
     }
 }
